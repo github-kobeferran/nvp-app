@@ -1,0 +1,232 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+
+
+
+main{
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.4rem !important;
+}
+
+.navbar {
+    background-color: rgb(241, 241, 241) !important;    
+    text-align: center;
+    font-size: medium !important;
+    font-weight: bold;
+    justify-content: center !important;
+    
+}
+
+.navbar-brand{
+    font-family: 'Patua One', cursive;
+    color: red !important;
+    font-size: 20px;
+   
+}
+
+.navbar-brand img {
+    border-radius: 10%;
+}
+
+.banner{    
+    color: white;
+    height: 35px;
+    line-height: 35px;
+    text-align: center !important;
+    font-family: 'Ubuntu', sans-serif;
+    background: linear-gradient(135deg, 
+    #009FE9 20%, #4abbf0 40%, #0781b9 60%, #4abbf0 80%, #009FE9 100%);
+    
+}
+
+.nav-link:hover{
+    background-color: #26ADEC;
+    color: white !important;
+    
+}
+
+.homepage-img{
+    box-shadow: 0px 0px 50px rgb(214, 179, 179);
+     
+}
+.homepage-img:hover{
+    box-shadow: 0px 0px 50px rgb(233, 144, 144);
+    z-index:-1; 
+}
+
+.homepage-slogan{
+    font-family: 'Satisfy', cursive;
+    font-size: 50px;
+    transform: rotate(-20deg);
+    text-shadow: rgb(255, 255, 255) 10px 0 20px;
+    text-shadow: 1px 1px 50px rgb(255, 255, 255), 0 0 1em rgb(255, 255, 255), 0 0 0.2em rgb(255, 255, 255);
+    margin-left: 60%;
+    margin-top: -40%;
+    position: absolute;
+}
+
+@media only screen and (max-width: 600px) {
+    .homepage-slogan{
+        font-size: 30px;
+    }
+}
+
+.admin-sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(102, 101, 101);
+    opacity: 0.9;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.7s;
+}
+
+.admin-sidebar a {
+    display: block;
+    padding: 20px 30px;
+    text-decoration: none;
+    color: #ccc;
+    font-size: 25px;
+}
+.admin-sidebar a:hover {
+    color: #fff;
+    transition: 0.4s;
+}
+
+.admin-sidebar .close {
+    position: absolute;
+    color: rgb(187, 187, 187);
+    top: 0;
+    right: 22px;
+    margin-left: 50px;
+    font-size: 30px;
+}
+
+.admin-sidebar a {
+    color: rgba(199, 194, 194, 0.432);
+    font-size: 36px;
+}
+
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(243, 176, 176);
+    opacity: 0.9;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.7s;
+}
+
+.sidebar a {
+    display: block;
+    padding: 20px 30px;
+    text-decoration: none;
+    color: red;
+    font-size: 25px;
+}
+
+.sidebar a {
+    color: rgba(83, 81, 81, 0.678);
+    font-size: 36px;
+    -webkit-text-stroke: .5px rgb(107, 103, 103); /* width and color */
+}
+
+.sidebar a:hover {
+    color: red;
+    transition: 0.4s;
+}
+
+.sidebar .close {
+    position: absolute;
+    color: rgb(124, 122, 122);
+    top: 0;
+    right: 22px;
+    margin-left: 50px;
+    font-size: 30px;    
+}
+
+.slide a {
+    color: #000;
+    font-size: 36px;
+    margin-left: 2%;
+    margin-top: 1%;
+}
+
+.slide a:hover {
+    color: rgb(151, 146, 146);
+
+}
+
+.profile-pic {
+
+    min-height: 300px !important;    
+    max-height: 300px !important;    
+    width: 300px;
+    border: 1px solid rgb(170, 166, 166);
+    border-radius: 50%;    
+
+}
+
+.toony-text-lg{
+
+    font-family: 'Chewy', cursive;
+    font-size: 5rem;        
+    -webkit-text-stroke: .8px rgb(77, 74, 74); 
+    margin: auto;
+}
+
+.pets-pic {
+    min-height: 200px !important;    
+    max-height: 200px !important;    
+    width: 200px;
+    border: 1px solid rgb(235, 103, 103);
+    border-radius: 50%;
+    margin: auto;
+    box-shadow: 0px 0px 50px rgb(214, 179, 179);
+}
+
+.pets-pic:hover{
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.table-client {
+    border: 1px solid black !important;
+    font-size: 1.2rem;
+}
+
+#petForm{
+
+    border: 1px solid rgba(0, 0, 0, 0.295);
+
+}
+
+.pet-profile-pic {
+
+    min-height: 300px !important;    
+    max-height: 300px !important;    
+    max-width: 300px;
+    border: 1px solid rgb(235, 103, 103);
+    box-shadow: 0px 0px 50px rgb(214, 179, 179);
+    border-radius: 50%;    
+
+}
