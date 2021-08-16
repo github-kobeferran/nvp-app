@@ -18,6 +18,7 @@
         <a href="/admin/pets">Pets</a>
         <a href="/admin/inventory">Inventory</a>
         <a href="/admin/services">Services</a>
+        <a href="/admin/employees">Employees</a>
         
     @else
 

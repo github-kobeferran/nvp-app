@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,7 @@ use App\Models\Client;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Mail\ClientCreated;
+use App\Exports\ClientsExport;
 
 
 class ClientsController extends Controller
@@ -171,7 +173,12 @@ class ClientsController extends Controller
 
         }
 
-    }    
+    }   
+    
+    public function export() 
+    {
+        return Excel::download(new ClientsExport, 'clients ' .  \Carbon\Carbon::now()->isoFormat('OY-MMM-DD') .  '.xlsx');
+    }
    
 
 }

@@ -60,6 +60,11 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::any('/storeappointment', [App\Http\Controllers\AppointmentsController::class, 'store'])->name('appointment.store');
     Route::any('/outofstock', [App\Http\Controllers\ItemsController::class, 'noStock'])->name('item.noStock');
     Route::any('/itemexport', [App\Http\Controllers\ItemsController::class, 'export'])->name('item.export');
+    Route::any('/admin/employees', [App\Http\Controllers\EmployeesController::class, 'view'])->name('employee.view');
+    Route::any('/employeeupdate', [App\Http\Controllers\EmployeesController::class, 'update'])->name('employee.update');
+    Route::any('/employeedelete', [App\Http\Controllers\EmployeesController::class, 'delete'])->name('employee.delete');
+    Route::any('/employeestore', [App\Http\Controllers\EmployeesController::class, 'store'])->name('employee.store');
+    Route::get('/clientsexport', [App\Http\Controllers\ClientsController::class, 'export'])->name('client.export');
 
 });
 

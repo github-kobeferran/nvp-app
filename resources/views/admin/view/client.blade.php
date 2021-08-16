@@ -52,6 +52,7 @@
           </span>
         </div>
         <input id="searchBox" type="text" class="form-control form-control-lg" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1">
+        <a href="/clientsexport" class="btn btn-success text-dark ml-2">Export to Excel </a>
     </div>
 
     <div class="table-responsive" style="max-height: 800px; margin-bottom: 10px; overflow:auto; -webkit-overflow-scrolling: touch;">

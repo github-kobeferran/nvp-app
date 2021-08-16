@@ -104,11 +104,9 @@
 
     <hr>
 
-    <div class="container ml-4 border border-primary p-4">
+    <div class="container ml-4 border border-primary p-4">        
 
-        <h3>Add an <u>Item Category</u></h3>
-
-        <div class="row m-4 border p-2">
+        <div class="row m-4 border p-2 mr-4">
 
             <div class="col">
 
@@ -202,8 +200,11 @@
                 @endempty
                 
             </div>
-            <div class="col">
-
+            <div class="col mx-auto text-right border-left">
+                
+                <br>
+                <h3 class="">Add an <u>Item Category</u></h3>
+                <br>
             {!!Form::open(['url' => '/addcat'])!!}
             
                <div class="form-inline mb-4">
