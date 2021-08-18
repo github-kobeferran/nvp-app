@@ -6,17 +6,25 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\Service;
+use App\Models\Pet;
 
 class AppointmentsController extends Controller
 {
     
-    public function done(Request $request){        
+    public function done(Request $request){             
 
         if($request->method() != 'POST')
             return redirect()->back();
 
         $appointment = Appointment::find($request->input('id'));
         $appointment->done = 1;
+
+        $pet = Pet::find($request->input('pet_id'));
+
+        if($pet->checked == 0)
+            $pet->checked = 1;
+        
+        $pet->save();        
         $appointment->save();
 
         return redirect('/admin');
@@ -25,8 +33,6 @@ class AppointmentsController extends Controller
 
 
     public function store(Request $request){  
-            
-        
 
         if($request->method() != 'POST')
             return redirect()->back();        
@@ -38,6 +44,7 @@ class AppointmentsController extends Controller
 
         if( Appointment::where('client_id', $request->input('client_id'))
                         ->where('service_id', $request->input('service_id'))
+                        ->where('pet_id', $request->input('pet_id'))
                         ->where('start_time', $start_time_formatted) 
                         ->where('end_time', $end_time_formatted) 
                         ->where('done', 0)                         
@@ -63,13 +70,16 @@ class AppointmentsController extends Controller
         $appointment->service_id = $request->input('service_id');
         $appointment->start_time = $start_time_formatted;
         $appointment->end_time = $end_time_formatted;
+        $appointment->pet_id = $request->input('pet_id');
+        
 
         $client = Client::find($appointment->client_id);
         $service =Service::find($appointment->service_id);
+        $pet =Pet::find($appointment->pet_id);
         
         $appointment->save();
 
-        return redirect('/admin')->with('success', 'Appointment with Client: ' . ucfirst($client->user->name) . ', of service: ' . ucfirst($service->desc) . ' has been added');
+        return redirect('/admin')->with('success', 'Appointment with Client: ' . ucfirst($client->user->name) . ', of service: ' . ucfirst($service->desc) . ' for ' . ucfirst($pet->name) . ' has been added');
 
     }    
 

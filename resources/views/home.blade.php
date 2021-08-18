@@ -57,6 +57,11 @@
         </div>
        
     </div>
+
+    <div class="text-center mx-auto">
+        For Contact Tracing please scan this QR code
+        <img src="{{url('storage/images/system/homepage-images/qrcode.png')}}" alt="" class="img-thumbnail">
+    </div>
                   
 </div>
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@include('inc.banner')
+{{-- @include('inc.banner') --}}
 
 @section('content')
 
@@ -15,7 +15,7 @@
         <div class="col">
             
             <a href="{{url('/admin/clients')}}" class="btn btn-secondary btn-block">
-                @empty(\App\Models\Client::all() )
+                @empty(\App\Models\Client::first() )
                 No Clients
                 @else
                 Client{{\App\Models\Client::count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Client::count()}}</span>
@@ -27,7 +27,7 @@
         <div class="col">
 
             <a href="{{url('/admin/pets')}}"  class="btn btn-danger btn-block">
-                @empty(\App\Models\Pet::all() )
+                @empty(\App\Models\Pet::first() )
                 No Pets
                 @else
                 Pet{{\App\Models\Pet::count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Pet::count()}}</span>
@@ -90,9 +90,17 @@
                 $list->all();
 
             ?>        
-            {{Form::select('client_id', $list , null, ['title' => 'Select Client', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
+             {{Form::select('client_id', $list , null, ['id' => 'clientSelect', 'title' => 'Select Client', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
 
         </div>   
+        
+        <div class="form-group">
+        
+            <label for="type">Pet</label>   
+        
+            {{Form::select('pet_id', [] , null, ['id' => 'petSelect', 'class' => 'form-control w-25 ml-2 border mx-auto', 'required' => 'required'])}}
+        
+        </div>  
 
         <div class="form-group">
 
@@ -102,10 +110,12 @@
          
                 $services = \App\Models\Service::orderBy('desc', 'asc')->get()->pluck('desc', 'id');                
 
-            ?>        
+            ?>   
+
             {{Form::select('service_id', $services , null, ['title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
 
-        </div>   
+        </div>  
+
 
         <hr>
 
@@ -140,7 +150,7 @@
     </div>
 
 
-    @empty(\App\Models\Appointment::all())->get())
+    @empty(\App\Models\Appointment::first())
     
     @else
         
@@ -188,6 +198,7 @@
                                 <tr>
                                     <th>Service</th>
                                     <th>Client</th>
+                                    <th>Pet</th>
                                     <th>Time</th>
                                     <th>Action</th>
                                 </tr>
@@ -204,6 +215,9 @@
                                         <td>{{$appointment->service->desc}}</td>    
 
                                         <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->name}}</a></td>
+                                        {{-- <td>{{$appointment->pet->name}}</td> --}}
+
+                                        <td><a href="{{url('/pet/'.$appointment->client->user->email . '/' . $appointment->pet->name )}}">{{ucfirst($appointment->pet->name)}}</a></td>
                                         
                                         <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
                                         <td>
@@ -239,6 +253,7 @@
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 
                                                 {{Form::hidden('id', $appointment->id)}}
+                                                {{Form::hidden('pet_id', $appointment->pet->id)}}
                 
                                                 <button type="submit" class="btn btn-primary">Yes</button>
                 
@@ -349,11 +364,11 @@
             <div class="tab-pane" id="tabs-4" role="tabpanel">
                 <div class="container m-4">
                     
-                    @empty(\App\Models\Appointment::where('done', 1)->orderBy('updated_at', 'desc')->get())
+                    @empty(\App\Models\Appointment::first())
 
                     @else
 
-                    <i class="fa fa-history" aria-hidden="true"></i> Appointment History
+                        <i class="fa fa-history" aria-hidden="true"></i> Appointment History
 
                         <table id="appointment-history" class="table table-bordered">
                             <thead class="bg-secondary text-white">
@@ -382,13 +397,13 @@
 
                         
                     @endempty
+                    
                 </div>
             </div>
         </div>
         
 
     </div>
-
     @endempty
 
 
@@ -396,10 +411,48 @@
 
 <script>
 
+let petSelect = document.getElementById('petSelect');
+let clientSelect = document.getElementById('clientSelect');
+
+clientSelect.addEventListener('change', () => {
+
+    let client_id = clientSelect.value;
+
+    let xhr = new XMLHttpRequest();        
+
+    xhr.open('GET', APP_URL + '/getclientpets/' + client_id , true);
+
+    xhr.onload = function() {
+        if (this.status == 200) {                 
+            
+            let pets = JSON.parse(this.responseText);  
+                                        
+            
+            let output = `<select name="pet_id" class="custom-select ml-2 border w-25 mx-auto" id="petSelect"   required>`;                                  
+            for(let i in pets){
+                output+=`<option value="`+ pets[i].id +`" >` + capitalizeFirstLetter(pets[i].name) +`</option>`;                        
+            }
+            output+=`</select>`;         
+                    
+            
+            petSelect.innerHTML = output;
+            
+                        
+        }              
+
+    }
+
+    xhr.send(); 
+
+    
+
+});
+
+
 $(function() {
-  $('#datetimepicker1').datetimepicker({      
-  });
-  $('#datetimepicker2').datetimepicker();
+$('#datetimepicker1').datetimepicker({      
+});
+$('#datetimepicker2').datetimepicker();
 });
 
 
@@ -410,6 +463,8 @@ $(document).ready( function () {
     // });
     $('#appointment-history').DataTable();
 } );
+
+
 
 
 </script>

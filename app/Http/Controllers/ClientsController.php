@@ -180,5 +180,14 @@ class ClientsController extends Controller
         return Excel::download(new ClientsExport, 'clients ' .  \Carbon\Carbon::now()->isoFormat('OY-MMM-DD') .  '.xlsx');
     }
    
+    public function getPets($id){
+
+        $client = Client::find($id);
+
+        return $client->pet->toJson();
+
+        
+
+    }
 
 }
