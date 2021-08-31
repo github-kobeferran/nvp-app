@@ -88,13 +88,13 @@
 
         <div class="form-inline mb-4">
             <label for="weight">Weight (kg)</label>
-            {{Form::number('height', $pet->weight, ['class' => 'form-control form-control-lg mx-2', 'step' => '.01', 'min' => '.01', 'required' => 'required'])}}
+            {{Form::number('weight', $pet->weight, ['class' => 'form-control form-control-lg mx-2', 'step' => '.01', 'min' => '.01', 'required' => 'required'])}}
             
         </div>
 
         <div class="form-inline mb-4">
             <label for="weight">Height (cm)</label>
-            {{Form::number('weight', $pet->height, ['class' => 'form-control form-control-lg mx-2', 'min' => '1', 'required' => 'required'])}}
+            {{Form::number('height', $pet->height, ['class' => 'form-control form-control-lg mx-2', 'min' => '1', 'required' => 'required'])}}
             
         </div>
 
