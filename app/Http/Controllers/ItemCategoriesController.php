@@ -16,7 +16,7 @@ class ItemCategoriesController extends Controller
             return redirect()->back();
 
         if(ItemCategory::where('desc', '=', $request->input('desc'))->exists())
-            return redirect()->back()->with('warning', 'Update Failed. There is already an existing category named '. $request->input('desc'));
+            return redirect()->back()->with('warning', 'Submission Failed. There is already an existing category named '. $request->input('desc'));
 
         $validator = Validator::make($request->all(), [
             'desc' => 'required|regex:/[A-Za-z0-9]+/|max:100',                    

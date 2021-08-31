@@ -193,6 +193,8 @@ function searchClient(){
                     else
                         output+= `<td>No</td>`;
 
+                    output+= `<td><a href="`+ APP_URL +`/createpet/` + users[i].email +`" class="btn btn-sm btn-primary">Add a Pet</a></td>`;
+                    
                 output+= `</tr>`;    
 
             }
