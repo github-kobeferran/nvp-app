@@ -103,7 +103,7 @@ class ItemsController extends Controller
         $item->quantity = $request->input('quantity');
         $item->deal_price = $request->input('deal_price');
         $item->reg_price = $request->input('reg_price');
-        $item->out = 0;
+        $item->out_of_stock = 0;
 
         $item->save();
 
@@ -118,7 +118,7 @@ class ItemsController extends Controller
 
         $item = Item::find($request->input('id'));
 
-        $item->out = 1;
+        $item->out_of_stock = 1;
         $item->quantity = 0;
 
         $item->save();

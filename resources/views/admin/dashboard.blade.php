@@ -243,7 +243,7 @@
                                                 <br>
                                                 Service : {{$appointment->service->desc}}
                                                 <hr>
-                                                Fee : {{$appointment->service->fee}}
+                                                Fee : {{$appointment->service->price}}
                                                 <hr>
                                                 Mark this appointment as <b>DONE?</b>
 
