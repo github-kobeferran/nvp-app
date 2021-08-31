@@ -42,6 +42,7 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/admin/pets', [App\Http\Controllers\PetsController::class, 'view'])->name('pet.view');
     Route::get('/admin/pets/search/{text?}', [App\Http\Controllers\PetsController::class, 'search'])->name('pet.search');
     Route::any('/storepettype', [App\Http\Controllers\PetTypesController::class, 'store'])->name('type.store');
+    Route::any('/updatepettype', [App\Http\Controllers\PetTypesController::class, 'update'])->name('type.update');
     Route::any('/deletepettype', [App\Http\Controllers\PetTypesController::class, 'delete'])->name('type.delete');
     Route::get('/petdata/{id}', [App\Http\Controllers\PetTypesController::class, 'showData'])->name('type.data');
     Route::any('/admin/pettype/search/{txt?}', [App\Http\Controllers\PetTypesController::class, 'search'])->name('type.search');

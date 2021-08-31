@@ -15,7 +15,7 @@
         <div class="col">
             
             <a href="<?php echo e(url('/admin/clients')); ?>" class="btn btn-secondary btn-block">
-                <?php if(empty(\App\Models\Client::first() )): ?>
+                <?php if(\App\Models\User::where('user_type', 0)->count() < 1 ): ?>
                 No Clients
                 <?php else: ?>
                 Client<?php echo e(\App\Models\Client::count() > 0 ? 's' : ''); ?> <span class="badge badge-light"><?php echo e(\App\Models\Client::count()); ?></span>

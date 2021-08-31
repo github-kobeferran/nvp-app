@@ -15,11 +15,11 @@
         <div class="col">
             
             <a href="{{url('/admin/clients')}}" class="btn btn-secondary btn-block">
-                @empty(\App\Models\Client::first() )
+                @if(\App\Models\User::where('user_type', 0)->count() < 1 )
                 No Clients
                 @else
                 Client{{\App\Models\Client::count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Client::count()}}</span>
-                @endempty
+                @endif
             </a>
 
         </div>
