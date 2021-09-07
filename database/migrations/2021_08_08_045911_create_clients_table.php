@@ -19,7 +19,7 @@ class CreateClientsTable extends Migration
             $table->boolean('sex')->nullable();
             $table->date('dob')->nullable();
             $table->string('contact', 25)->nullable();
-            $table->string('address', 100)->nullable();
+            $table->string('address')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

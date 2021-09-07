@@ -27,9 +27,9 @@
         <div class="form-inline">
             <label class="text-muted" for="image">Image</label>            
             {{Form::file('image', ['class' => 'form-control border-0  ml-3'])}}
-        </div>
+        </div>        
 
-        <hr>
+        <hr class="bg-dark" style="opacity: .25">
 
         <div class="form-inline my-2">
 
@@ -38,12 +38,16 @@
 
         </div>
 
+        <hr class="bg-dark" style="opacity: .25">
+
         <div class="form-inline my-2">
 
             <label class="text-muted" for="name">First Name</label>
             {{Form::text('first_name', $user->first_name, ['class' => 'form-control form-control-lg ml-2 w-75', 'placeholder' => 'First Name'])}}                        
 
         </div>
+
+        <hr class="bg-dark" style="opacity: .25">
 
         <div class="form-inline my-2">
 
@@ -52,7 +56,7 @@
 
         </div>
 
-        <hr>
+        <hr class="bg-dark" style="opacity: .25">
 
         <div class="form-inline my-2">
 
@@ -61,7 +65,7 @@
 
         </div>
 
-        <hr>
+        <hr class="bg-dark" style="opacity: .25">
 
         <div class="form-inline my-2">
 
@@ -70,7 +74,7 @@
 
         </div>
 
-        <hr>
+        <hr class="bg-dark" style="opacity: .25">
 
         <div class="form-inline my-2">
 
@@ -79,16 +83,16 @@
 
         </div>
 
-        <hr>
+        <hr class="bg-dark" style="opacity: .25">
 
-        <div class="form-inline my-2">
+        <div class="form-group my-2">
 
-            <label class="text-muted" for="adress">Address</label>
-            {{Form::text('address', $client->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-75'])}}                        
+            <label class="text-muted" for="adress">Address <span style="font-size: .8em;" class="text-muted">: Street, Baranggay, City/Municipality, Province (seperated by comma)</span></label>
+            {{Form::text('address', $client->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-100'])}}                        
 
         </div>
 
-        <hr>
+        <hr class="bg-dark" style="opacity: .25">
 
         <button class="btn btn-block btn-primary float-right mt-4">Submit</button>
 

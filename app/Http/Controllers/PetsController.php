@@ -42,7 +42,7 @@ class PetsController extends Controller
 
     }
 
-    public function store(Request $request){
+    public function store(Request $request){          
 
         if($request->method() != 'POST')
             return redirect()->back();
@@ -50,19 +50,59 @@ class PetsController extends Controller
         $client = Client::find($request->input('client_id'));                 
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:100',         
-            'breed' => 'required|regex:/^[a-z ,.\w\'-]*$/|max:50', 
+            'name' => 'required|max:100',                     
             'dob' => 'required|date|before:' . Carbon::now()->addDay()->toDateTimeString() . '|after:' . Carbon::now()->subYears(30),
             'weight' => 'required|min:.01|max:100',
-            'height' => 'required|min:1|max:112',
-            'color' => 'required|min:1|max:50',
+            'height' => 'required|min:1|max:112',            
         ]);    
 
         if ($validator->fails()) {
             return redirect('/createpet/'. $client->user->email)
                             ->withErrors($validator)
-                            ->withInput();                         
+                            ->withInput();
         }
+
+        if($request->has('otherBreed')){
+
+            $validator = Validator::make($request->all(), [
+                'breedText' => 'required|alpha_dash|max:50', 
+            ]);    
+
+            if ($validator->fails()) 
+                return redirect('/createpet/'. $client->user->email)->withErrors($validator)->withInput();                                     
+
+        } else {
+            
+            $validator = Validator::make($request->all(), [
+                'breed' => 'required', 
+            ]);    
+
+            if ($validator->fails()) 
+                return redirect('/createpet/'. $client->user->email)->withErrors($validator)->withInput();                         
+        } 
+        
+        if($request->has('otherColor')){   
+
+            $validator = Validator::make($request->all(), [
+                'colorText' => 'required|alpha_dash|max:25', 
+            ]);    
+
+            if ($validator->fails()) {
+                return redirect('/createpet/'. $client->user->email)
+                                ->withErrors($validator)
+                                ->withInput();                         
+            }
+
+        } else {
+
+            $validator = Validator::make($request->all(), [
+                'color' => 'required', 
+            ]);    
+
+            if ($validator->fails()) 
+                return redirect('/createpet/'. $client->user->email)->withErrors($validator)->withInput();                         
+
+        } 
 
         if(Pet::where('client_id', $client->id)->where('name', $request->input('name'))->exists())
             return redirect()->back()->with('warning', 'Pet Registration failed. There is already a pet named ' . ucfirst($request->input('name')) . ' owned by ' . $client->user->name);
@@ -89,8 +129,16 @@ class PetsController extends Controller
 
         $pet->name = $request->input('name');
         $pet->dob = $request->input('dob');
-        $pet->breed = $request->input('breed');        
-        $pet->color = $request->input('color');        
+
+        if($request->has('otherBreed'))
+            $pet->breed = $request->input('breedText');
+        else
+            $pet->breed = $request->input('breed');
+
+        if($request->has('otherBreed'))
+            $pet->breed = $request->input('colorText');
+        else
+            $pet->breed = $request->input('color');           
 
         if(auth()->user()->isAdmin())
             $pet->checked = $request->input('checked');
@@ -139,7 +187,7 @@ class PetsController extends Controller
 
     }
 
-    public function update(Request $request){
+    public function update(Request $request){        
 
         if($request->method() != 'POST')
             return redirect()->back();
@@ -148,11 +196,11 @@ class PetsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|regex:/^[a-z ,.\w\'-]*$/|max:100',         
-            'breed' => 'required|regex:/^[a-z ,.\w\'-]*$/|max:50', 
+            'breed' => 'required|alpha_dash|min:3|max:50', 
             'dob' => 'required|date|before:' . Carbon::now()->addDay()->toDateTimeString() . '|after:' . Carbon::now()->subYears(30),
             'weight' => 'required|min:.01|max:100',
             'height' => 'required|min:1|max:112',
-            'color' => 'required|min:1|max:50',
+            'color' => 'required|alpha_dash|min:3|max:50',
         ]); 
         
         if ($validator->fails()) {
