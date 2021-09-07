@@ -14,7 +14,7 @@ class Client extends Model
     protected $appends = ['dob_string' => null, 'age' => null];
 
     protected $fillable = [
-        'user_id',
+        'user_id',        
     ];
 
     public function user()

@@ -171,17 +171,9 @@
 
     <hr class="text-dark">
 
-    <div class="input-group mt-3 mb-1">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i>
-          </span>
-        </div>
-        <input id="petSearchBox" type="text" class="form-control form-control-lg" placeholder="Search by Name or Breed.." aria-label="Username" aria-describedby="basic-addon1">
-    </div>
-
     <div class="table-responsive" style="max-height: 800px; margin-bottom: 10px; overflow:auto; -webkit-overflow-scrolling: touch;">
 
-        <table class="table table-bordered ">
+        <table id="pets" class="table table-bordered ">
 
             <thead class="bg-dark text-white">
                 <tr>
@@ -231,87 +223,16 @@
 
 <script>
 
-let petSearchBox = document.getElementById('petSearchBox');
-let petList = document.getElementById('pet-list');
+$(document).ready(function() {
+    $('#pets').DataTable();
+} );
+
 let petTypePanel = document.getElementById('petTypePanel');
 let typeList = document.getElementById('type-list');
 let petTypeSearchBox = document.getElementById('petTypeSearchBox');
 let typeForm = document.getElementById('typeForm');
 let editTypeForm = document.getElementById('editTypeForm');
 let formTitle = document.getElementById('form-title');
-
-petSearchBox.addEventListener('keyup', searchPet);
-petTypeSearchBox.addEventListener('keyup', searchType);
-
-function searchPet(){
-
-    let txt = petSearchBox.value;
-
-    let xhr = new XMLHttpRequest();
-
-    xhr.open('GET', APP_URL + '/admin/pets/search/'+ txt, true);
-
-    xhr.onload = function() {
-
-        if (this.status == 200) {
-
-            let pets = JSON.parse(this.responseText);
-
-            let output = `<tbody id="pet-list">`;
-
-            for(let i in pets){
-
-                output+= `<tr>`;    
-
-                    output+= `<td><a href="">` + capitalizeFirstLetter(pets[i].name) +`</a></td>`;
-                    output+= `<td>`+ capitalizeFirstLetter(pets[i].type.type) +`</td>`;
-
-                    if(pets[i].breed !== null)
-                        output+= `<td>`+ capitalizeFirstLetter(pets[i].breed) +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(pets[i].sex !== null)
-                        output+= `<td>`+ (pets[i].sex ? 'Female' : 'Male') +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(pets[i].dob !== null)
-                        output+= `<td>`+ pets[i].dob_string + `(` + pets[i].age + `)` +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(pets[i].weight !== null)
-                        output+= `<td>`+ pets[i].weight + ` kg` +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(pets[i].height !== null)
-                        output+= `<td>`+ pets[i].height + ` cm` +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(pets[i].height !== null)
-                        output+= `<td><a href="/user/`+ pets[i].owner.user.email +`">` + capitalizeFirstLetter(pets[i].owner.user.name) +`</a></td>`;                        
-                    else
-                        output+= `<td>N/A</td>`;
-                    
-                    output+= `<td>`+ (pets[i].checked ? 'Yes'  : 'Not Yet') +`</td>`;
-
-                output+= `</tr>`;    
-
-            }
-
-            output+= `</tbody>`;
-
-            petList.innerHTML = output;
-        
-        } 
-    }    
-
-    xhr.send();
-
-}
 
 function togglePetTypes(){
 

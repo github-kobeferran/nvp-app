@@ -13,11 +13,23 @@ use Carbon\Carbon;
 
 class PetsController extends Controller
 {
-    public function create($email){
+    public function create($email){        
 
-        if(User::where('email', $email)->exists()){    
+        if(User::where('user_type', 0)->where('email', $email)->exists()){    
 
-            return view('pet.create')->with('user', User::where('email', $email)->first());
+            if(!auth()->user()->isAdmin()){
+
+                if(auth()->user()->email != $email)
+                    return redirect('/user');
+                else
+                    return view('pet.create')->with('user', User::where('email', $email)->first());
+
+            } else {
+
+                return view('pet.create')->with('user', User::where('email', $email)->first());
+
+            }
+                
 
         } else {
             
@@ -241,48 +253,6 @@ class PetsController extends Controller
 
         }
 
-    }
-
-    public function search($text = null){
-
-        if(is_null($text)){
-
-            $pets = Pet::latest();
-
-            foreach($pets as $pet){
-
-                $pet->type;
-                $pet->owner;
-                $pet->owner->user;
-                $pet->dob_string = $pet->dob;
-                $pet->age = $pet->dob;
-
-            }
-
-            return $pets->toJson();
-
-        } else {
-            
-            $pets = Pet::query()
-            ->where('name', 'LIKE', '%' . $text . "%")
-            ->orWhere('breed', 'LIKE', '%' . $text . "%")          
-            ->get();
-
-            foreach($pets as $pet){
-                $pet->type;
-                $pet->owner;
-                $pet->owner->user;
-                $pet->dob_string = $pet->dob;
-                $pet->age = $pet->dob;
-            }
-
-            return $pets->toJson();
-
-        }
-
-    }
-
-   
+    }     
     
-
 }

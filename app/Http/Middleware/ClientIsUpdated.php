@@ -23,12 +23,12 @@ class ClientIsUpdated
 
         if(!auth()->user()->isAdmin()){  
 
-            if(is_null(auth()->user()->client->image) || is_null(auth()->user()->name) || is_null(auth()->user()->client->sex) || is_null(auth()->user()->client->dob) || is_null(auth()->user()->client->contact) || is_null(auth()->user()->client->image) || is_null(auth()->user()->client->address))
+            if(is_null(auth()->user()->client->image) || is_null(auth()->user()->first_name) || is_null(auth()->user()->last_name) || is_null(auth()->user()->middle_name) || is_null(auth()->user()->client->sex) || is_null(auth()->user()->client->dob) || is_null(auth()->user()->client->contact) || is_null(auth()->user()->client->image) || is_null(auth()->user()->client->address))
                 return redirect()->back();                
             else    
                 return $next($request);
 
-        }else{
+        } else {
             return $next($request);
         }
 

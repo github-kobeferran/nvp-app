@@ -18,7 +18,7 @@
                 @if(\App\Models\User::where('user_type', 0)->count() < 1 )
                 No Clients
                 @else
-                Client{{\App\Models\Client::count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Client::count()}}</span>
+                Client{{\App\Models\User::where('user_type', 0)->count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\User::where('user_type', 0)->count()}}</span>
                 @endif
             </a>
 
@@ -82,7 +82,7 @@
                 
                 foreach ($users as $user) {
 
-                    $user_clients->push(collect(['name' => $user->name, 'id' => $user->client->id]));
+                    $user_clients->push(collect(['name' => $user->first_name . ' ' . substr($user->middle_name, 0, 1) . '. ' . $user->last_name, 'id' => $user->client->id]));
 
                 }                
                 
@@ -214,8 +214,8 @@
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
 
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->name}}</a></td>
-                                        {{-- <td>{{$appointment->pet->name}}</td> --}}
+                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
+
 
                                         <td><a href="{{url('/pet/'.$appointment->client->user->email . '/' . $appointment->pet->name )}}">{{ucfirst($appointment->pet->name)}}</a></td>
                                         
@@ -232,14 +232,14 @@
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header bg-dark text-white">
-                                            <h5 class="modal-title " id="exampleModalLongTitle">{{$appointment->service->desc . ' : ' . $appointment->client->user->name}}</h5>
+                                            <h5 class="modal-title " id="exampleModalLongTitle">{{$appointment->service->desc . ' : ' . $appointment->client->user->first_name . ' ' . $appointment->client->user->last_name}}</h5>
                                             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                             </div>
                                             <div class="modal-body">
 
-                                                Client : {{ucfirst($appointment->client->user->name)}}
+                                                Client : {{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}
                                                 <br>
                                                 Service : {{$appointment->service->desc}}
                                                 <hr>
@@ -303,7 +303,7 @@
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
 
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->name}}</a></td>
+                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
                                         
                                         <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('MMM D, OY') . ' ' . \Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
                                        
@@ -348,7 +348,7 @@
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
 
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->name}}</a></td>
+                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
                                         
                                         <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('MMM D, OY') . ' ' . \Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
                                     </tr>                                                                    
@@ -385,7 +385,7 @@
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
 
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->name}}</a></td>
+                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
                                         
                                         <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('MMM D, OY') . ' ' . \Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
                                     

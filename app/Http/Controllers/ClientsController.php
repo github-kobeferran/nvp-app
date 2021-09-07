@@ -38,11 +38,15 @@ class ClientsController extends Controller
                             ->withInput();                         
         }
 
-        $name = $request->input('name');
+        $last_name = $request->input('last_name');
+        $middle_name = $request->input('middle_name');
+        $first_name = $request->input('first_name');
         $pass = Client::generateRandomString();
 
         $user = User::create([
-            'name' => $name ,
+            'last_name' =>  $last_name,
+            'middle_name' =>  $middle_name,
+            'first_name' =>  $first_name,
             'email' => $request->input('email'),
             'password' => Hash::make($pass),
         ]);     
@@ -81,10 +85,16 @@ class ClientsController extends Controller
         
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|regex:/^[\pL\s\-]+$/u|max:100',                                                          
+            'last_name' => 'required|regex:/^[\pL\s\-]+$/u|max:50',                                                          
+            'first_name' => 'required|regex:/^[\pL\s\-]+$/u|max:50',                                                          
+            'middle_name' => 'required|regex:/^[\pL\s\-]+$/u|max:50',                                                          
             'dob' => 'date|before:'. $before_date->toDateString() . '|after:' . $after_date,            
             'contact' => 'digits_between:10,15',
             'address' => 'max:100',
+        ],[
+            'dob.required' => 'Date of Birth is required',
+            'dob.before' => 'Date of Birth must be before '. $before_date->isoFormat('MMM DD, OY'),
+            'dob.after' => 'Date of Birth must be after '. $after_date->isoFormat('MMM DD, OY'),
         ]);
 
         if ($validator->fails()) {
@@ -113,7 +123,9 @@ class ClientsController extends Controller
 
      
         
-        $user->name = $request->input('name');                
+        $user->last_name = $request->input('last_name');                
+        $user->first_name = $request->input('first_name');                
+        $user->middle_name = $request->input('middle_name');                
 
         if($request->hasFile('image')){
 
@@ -141,43 +153,10 @@ class ClientsController extends Controller
         return view('admin.view.client');
 
     }
-
-    public function search($text = null){
-
-        if(is_null($text)){
-
-            $users = User::where('user_type', 0)->get();       
-
-            foreach($users as $user){
-                $user->client;
-                $user->client->dob_string = $user->client->dob;
-                $user->client->age = $user->client->dob;
-            }
-
-            return $users->toJson();
-
-        } else {
-
-            $users = User::query()
-            ->where('name', 'LIKE', '%' . $text . "%")
-            ->orWhere('email', 'LIKE', '%' . $text . "%")          
-            ->get();
-
-            foreach($users as $user){
-                $user->client;
-                $user->client->dob_string = $user->client->dob;
-                $user->client->age = $user->client->dob;
-            }
-
-            return $users->toJson();
-
-        }
-
-    }   
-    
+  
     public function export() 
     {
-        return Excel::download(new ClientsExport, 'clients ' .  \Carbon\Carbon::now()->isoFormat('OY-MMM-DD') .  '.xlsx');
+        return Excel::download(new ClientsExport, 'clients ' .  Carbon::now()->isoFormat('OY-MMM-DD') .  '.xlsx');
     }
    
     public function getPets($id){

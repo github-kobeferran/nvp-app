@@ -26,9 +26,11 @@ Route::get('/services', [App\Http\Controllers\HomeController::class, 'showServic
 
 Route::get('/user', [App\Http\Controllers\UsersController::class, 'viewClient'])->name('user.client')->middleware(['verified']);
 Route::get('/user/{email?}', [App\Http\Controllers\UsersController::class, 'viewClient'])->name('user.client')->middleware(['verified']);
+
 Route::get('/createpet', [App\Http\Controllers\PetsController::class, 'create'])->name('user.client')->middleware(['verified', 'client.updated']);
 Route::get('/pet/{email}/{pet?}', [App\Http\Controllers\PetsController::class, 'show'])->name('pet.show')->middleware(['verified', 'client.updated']);
 Route::get('/createpet/{email}', [App\Http\Controllers\PetsController::class, 'create'])->name('pet.create')->middleware(['verified', 'client.updated']);
+
 Route::any('/registerpetadmin', [App\Http\Controllers\PetsController::class, 'store'])->name('pet.store');
 
 
@@ -37,10 +39,8 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/admin', [App\Http\Controllers\UsersController::class, 'viewAdmin'])->name('user.admin');
     Route::get('/admin/createclient', [App\Http\Controllers\ClientsController::class, 'create'])->name('client.create');
     Route::get('/admin/clients', [App\Http\Controllers\ClientsController::class, 'view'])->name('client.view');
-    Route::get('/admin/clients/search/{text?}', [App\Http\Controllers\ClientsController::class, 'search'])->name('client.search');
     Route::any('/registerclient', [App\Http\Controllers\ClientsController::class, 'store'])->name('client.store');
     Route::get('/admin/pets', [App\Http\Controllers\PetsController::class, 'view'])->name('pet.view');
-    Route::get('/admin/pets/search/{text?}', [App\Http\Controllers\PetsController::class, 'search'])->name('pet.search');
     Route::any('/storepettype', [App\Http\Controllers\PetTypesController::class, 'store'])->name('type.store');
     Route::any('/updatepettype', [App\Http\Controllers\PetTypesController::class, 'update'])->name('type.update');
     Route::any('/deletepettype', [App\Http\Controllers\PetTypesController::class, 'delete'])->name('type.delete');

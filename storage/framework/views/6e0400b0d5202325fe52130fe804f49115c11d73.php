@@ -21,7 +21,7 @@
                
             <?php endif; ?>     
 
-            <h2 class="m-2 text-secondary "> <?php echo e($user->name); ?> </h2>
+            <h2 class="m-2 text-secondary "> <?php echo e($user->first_name . ' ' . substr($user->middle_name, 0, 1) . '. ' . $user->last_name); ?> </h2>
             <em> <h5 class="m-2 text-secondary "><?php echo e($user->email); ?></h5></em>
 
         </div>     
@@ -164,7 +164,7 @@
             <div class="toony-text-lg text-center text-danger">
 
                 <?php if(auth()->user()->isAdmin()): ?>
-                    <?php echo e($user->name); ?>'s Pets
+                    <?php echo e($user->first_name); ?>'s Pets
                 <?php else: ?>
                     My Pets
                 <?php endif; ?>

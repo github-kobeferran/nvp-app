@@ -21,7 +21,7 @@
                
             @endempty     
 
-            <h2 class="m-2 text-secondary "> {{$user->name}} </h2>
+            <h2 class="m-2 text-secondary "> {{$user->first_name . ' ' . substr($user->middle_name, 0, 1) . '. ' . $user->last_name}} </h2>
             <em> <h5 class="m-2 text-secondary ">{{$user->email}}</h5></em>
 
         </div>     
@@ -164,7 +164,7 @@
             <div class="toony-text-lg text-center text-danger">
 
                 @if (auth()->user()->isAdmin())
-                    {{$user->name}}'s Pets
+                    {{$user->first_name}}'s Pets
                 @else
                     My Pets
                 @endif

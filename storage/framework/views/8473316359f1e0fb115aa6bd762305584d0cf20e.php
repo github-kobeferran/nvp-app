@@ -33,7 +33,7 @@
                 <?php else: ?>
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            <?php echo e(Auth::user()->name); ?>
+                            <?php echo e(Auth::user()->first_name); ?>
 
                         </a>
 
@@ -42,14 +42,14 @@
                             <?php if(auth()->user()->isAdmin()): ?>
                             
                                 <a class="dropdown-item" href="<?php echo e(route('user.admin')); ?>"                                >
-                                    <?php echo e(auth()->user()->name); ?>
+                                    <?php echo e(auth()->user()->first_name); ?>
 
                                 </a>
                             
                             <?php else: ?>
 
                                 <a class="dropdown-item" href="/user">
-                                    <?php echo e(auth()->user()->name); ?>
+                                    <?php echo e(auth()->user()->first_name); ?>
 
                                 </a>
 

@@ -33,8 +33,22 @@
 
         <div class="form-inline my-2">
 
-            <label class="text-muted" for="name">Name</label>
-            {{Form::text('name', $user->name, ['class' => 'form-control form-control-lg ml-2 w-75'])}}                        
+            <label class="text-muted" for="name">Last Name</label>
+            {{Form::text('last_name', $user->last_name, ['class' => 'form-control form-control-lg ml-2 w-75', 'placeholder' => 'Last Name'])}}                        
+
+        </div>
+
+        <div class="form-inline my-2">
+
+            <label class="text-muted" for="name">First Name</label>
+            {{Form::text('first_name', $user->first_name, ['class' => 'form-control form-control-lg ml-2 w-75', 'placeholder' => 'First Name'])}}                        
+
+        </div>
+
+        <div class="form-inline my-2">
+
+            <label class="text-muted" for="name">Middle Name</label>
+            {{Form::text('middle_name', $user->middle_name, ['class' => 'form-control form-control-lg ml-2 w-75', 'placeholder' => 'Middle Name'])}}                        
 
         </div>
 
@@ -49,7 +63,7 @@
 
         <hr>
 
-        <div class="form-inline my-2"">
+        <div class="form-inline my-2">
 
             <label class="text-muted" for="dob">Date of Birth</label>
             {{Form::date('dob', $client->dob, ['class' => 'form-control form-control-lg ml-3'])}}

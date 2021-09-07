@@ -46,22 +46,17 @@
 
     <hr class="text-dark">
 
-    <div class="input-group mt-3 mb-1">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i>
-          </span>
-        </div>
-        <input id="searchBox" type="text" class="form-control form-control-lg" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1">
-        <a href="/clientsexport" class="btn btn-success text-dark ml-2">Export to Excel </a>
-    </div>
+    <a href="/clientsexport" class="btn btn-success text-dark ml-2 float-right">Export to Excel </a>
 
     <div class="table-responsive" style="max-height: 800px; margin-bottom: 10px; overflow:auto; -webkit-overflow-scrolling: touch;">
 
-        <table class="table table-bordered ">
+        <table id="clients" class="table table-bordered ">
 
             <thead class="bg-info text-white">
                 <tr>
-                    <th>Name</th>                
+                    <th>Last Name</th>                
+                    <th>First Name</th>                
+                    <th>Middle Name</th>                
                     <th>Email</th>                
                     <th>Sex</th>                
                     <th>Date of Birth</th>                
@@ -81,8 +76,10 @@
                 @foreach (\App\Models\User::where('user_type', 0)->get() as $user)
                 
                  <tr>
-                    <td><a href="/user/{{$user->email}}">{{$user->name}}</a></td>
-                    <td>{{$user->email}}</td>
+                     <td>{{$user->last_name}}</td>
+                     <td>{{$user->middle_name}}</td>
+                     <td>{{$user->first_name}}</td>
+                    <td><a href="/user/{{$user->email}}">{{$user->email}}</a></td>
                     <td>
                         <?php 
 
@@ -141,74 +138,9 @@
 
 <script>
 
-let searchBox = document.getElementById('searchBox');
-let clientList = document.getElementById('client-list');
-
-searchBox.addEventListener('keyup', searchClient);
-
-function searchClient(){
-
-    let txt = searchBox.value;
-
-    let xhr = new XMLHttpRequest();
-
-    xhr.open('GET', APP_URL + '/admin/clients/search/'+ txt, true);
-
-    xhr.onload = function() {
-        if (this.status == 200) {
-
-            let users = JSON.parse(this.responseText);
-
-            let output = `<tbody id="client-list">`;
-
-            for(let i in users){
-
-                output+= `<tr>`;    
-
-                    output+= `<td><a href="/user/` + users[i].email + `">` + users[i].name +`</a></td>`;
-                    output+= `<td>`+ users[i].email +`</td>`;
-
-                    if(users[i].client.sex !== null)
-                        output+= `<td>`+ (users[i].client.sex  ? 'Female' : 'Male') +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(users[i].client.dob !== null)
-                        output+= `<td>`+ users[i].client.dob_string +` (`+ users[i].client.age + `yrs)` +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(users[i].client.address !== null)
-                        output+= `<td>`+ users[i].client.address +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(users[i].client.contact !== null)
-                        output+= `<td>`+ users[i].client.contact +`</td>`;
-                    else
-                        output+= `<td>N/A</td>`;
-
-                    if(users[i].email_verified_at !== null)                        
-                        output+= `<td>Yes</td>`;
-                    else
-                        output+= `<td>No</td>`;
-
-                    output+= `<td><a href="`+ APP_URL +`/createpet/` + users[i].email +`" class="btn btn-sm btn-primary">Add a Pet</a></td>`;
-                    
-                output+= `</tr>`;    
-
-            }
-
-            output+= `</tbody>`;
-
-            clientList.innerHTML = output;
-        
-        } 
-    }    
-
-    xhr.send();
-
-}
+$(document).ready(function() {
+    $('#clients').DataTable();
+} );
 
 </script>
 
