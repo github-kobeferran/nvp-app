@@ -66,7 +66,8 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::any('/employeedelete', [App\Http\Controllers\EmployeesController::class, 'delete'])->name('employee.delete');
     Route::any('/employeestore', [App\Http\Controllers\EmployeesController::class, 'store'])->name('employee.store');
     Route::get('/clientsexport', [App\Http\Controllers\ClientsController::class, 'export'])->name('client.export');
-    Route::get('/getclientpets/{id}', [App\Http\Controllers\ClientsController::class, 'getPets'])->name('client.pets');
+    Route::get('/getclientpets/{id}', [App\Http\Controllers\ClientsController::class, 'getRemainingPets'])->name('client.pets');
+    Route::any('/updatesetting', [App\Http\Controllers\SettingsController::class, 'update'])->name('setting.update');
 
 });
 

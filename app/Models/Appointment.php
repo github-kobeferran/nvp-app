@@ -8,13 +8,7 @@ use App\Models\Client;
 
 class Appointment extends Model
 {
-    use HasFactory;
-
-    public function client(){
-
-        return $this->hasOne(Client::class, 'id', 'client_id');
-
-    }
+    use HasFactory;    
 
     public function service(){
 

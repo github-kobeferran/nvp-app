@@ -8,7 +8,7 @@
 
     <div class="text-center">
 
-        @empty($pet->image)
+        @if(is_null($pet->image))
 
             <img class="pet-profile-pic" src="{{url('storage/images/pet/no-image-pet.jpg')}}" alt="">
 
@@ -16,7 +16,7 @@
 
             <img class="pet-profile-pic" src="{{url('storage/images/pet/' . $pet->image)}}" alt="">
            
-        @endempty     
+        @endif     
 
         <h2 class="m-2 text-secondary "><i class="fa fa-paw" style="font-style: italic;" aria-hidden="true"></i> {{ucfirst($pet->name)}} <i class="fa fa-paw" style="font-style: italic;" aria-hidden="true"></i></h2>
         <em> <h5 class="m-2 text-secondary ">Birthday: {{$pet->dob_string}} | {{$pet->age}}</h5></em>
@@ -30,26 +30,26 @@
             @if (auth()->user()->isAdmin())
                         
                 <tr>
-                    <td>Owner: <a href="{{url('/user/' .  $pet->owner->user->email)}}">{{ucfirst($pet->owner->user->name)}}</a></td>  
+                    <td>Owner: <a href="{{url('/user/' .  $pet->owner->user->email)}}">{{ucfirst($pet->owner->user->first_name) . ' ' . strtoupper(substr($pet->owner->user->middle_name, 0, 1)) . ' ' . ucfirst($pet->owner->user->last_name)}}</a></td>  
                 </tr>
                 
             @endif
-
-            @empty($pet->sex)
+            
+            @if(is_null($pet->sex))
                 
             @else
                 <tr>
                     <td>{{$pet->sex ? 'Female' : 'Male'}}</td>  
                 </tr>
-            @endempty        
+            @endif        
 
-            @empty($pet->type)
+            @if(is_null($pet->type))            
                 
             @else
                 <tr>
                     <td>{{ucfirst($pet->type->type)}} : <em>{{ucfirst($pet->breed)}}</em></td>  
                 </tr>
-            @endempty        
+            @endif        
 
             @if (isset($pet->weight) && isset($pet->height))
             

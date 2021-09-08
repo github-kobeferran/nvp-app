@@ -17,15 +17,17 @@ class CreateServicesTable extends Migration
             $table->id();
             $table->string('desc', 100);
             $table->unsignedInteger('price');
+            $table->boolean('status')->default(0);
             $table->timestamps();
-        });      
+        });
 
         Schema::create('appointments', function (Blueprint $table) {
-            $table->id();            
-            $table->integer('client_id');
+            $table->id();                        
+            $table->integer('pet_id');
             $table->integer('service_id');            
-            $table->dateTime('date_time');   
-            $table->boolean('done')->default(0);
+            $table->date('date');   
+            $table->boolean('status')->default(0);
+            $table->integer('transaction_id');
             $table->timestamps();
         });
     }

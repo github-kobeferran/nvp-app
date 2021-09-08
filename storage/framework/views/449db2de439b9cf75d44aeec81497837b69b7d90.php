@@ -140,7 +140,7 @@
     
                 <div class="form-inline">
                     <label for="weight">Weight (kg)</label>
-                    <?php echo e(Form::number('height', '', ['placeholder' => 'Pet Weight', 'class' => 'form-control form-control-lg mx-2', 'step' => '.01', 'min' => '.01', 'required' => 'required'])); ?>
+                    <?php echo e(Form::number('weight', '', ['placeholder' => 'Pet Weight', 'class' => 'form-control form-control-lg mx-2', 'step' => '.01', 'min' => '.01', 'required' => 'required'])); ?>
 
                     
                 </div>
@@ -149,7 +149,7 @@
     
                 <div class="form-inline">
                     <label for="weight">Height (cm)</label>
-                    <?php echo e(Form::number('weight', '', ['placeholder' => 'Pet Height', 'class' => 'form-control form-control-lg mx-2', 'min' => '1', 'required' => 'required'])); ?>
+                    <?php echo e(Form::number('height', '', ['placeholder' => 'Pet Height', 'class' => 'form-control form-control-lg mx-2', 'min' => '1', 'required' => 'required'])); ?>
 
                     
                 </div>
@@ -160,9 +160,9 @@
     
                     <div class="form-inline">
                         <label for="weight">Have been in Clinic?</label>
-                        <?php echo e(Form::checkbox('checked', 1, true, ['class' => ' ml-2', 'style' => 'width: 25px; height: 25px;'])); ?>
-
                         <?php echo e(Form::hidden('checked', 0)); ?>
+
+                        <?php echo e(Form::checkbox('checked', 1, true, ['class' => ' ml-2', 'style' => 'width: 25px; height: 25px;'])); ?>
 
                     </div>
                     

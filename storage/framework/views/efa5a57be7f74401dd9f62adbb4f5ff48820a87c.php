@@ -205,7 +205,7 @@
                     <td><?php echo e(is_null($pet->dob) ? 'N\A' : \Carbon\Carbon::parse($pet->dob)->isoFormat('MMM DD, OY') . ' (' . \Carbon\Carbon::parse($pet->dob)->diff()->format('%y years, %m months and %d days') . ')'); ?></td>                                        
                     <td><?php echo e(is_null($pet->weight) ? 'N\A' : $pet->weight . ' kg'); ?></td>                    
                     <td><?php echo e(is_null($pet->height) ? 'N\A' : $pet->height . ' cm'); ?></td>                    
-                    <td><a href="<?php echo e(url('/user/' . $pet->owner->user->email)); ?>"><?php echo e(is_null($pet->owner->user->name) ? 'N\A' : $pet->owner->user->name); ?></a></td>                    
+                    <td><a href="<?php echo e(url('/user/' . $pet->owner->user->email)); ?>"><?php echo e(ucfirst($pet->owner->user->first_name) . ' ' . ucfirst(substr($pet->owner->user->middle_name, 0, 1)) . '. ' . ucfirst($pet->owner->user->last_name)); ?></a></td>                    
                     <td><?php echo e((is_null($pet->checked) ? 'N\A' : $pet->checked ) ? 'Yes' : 'Not Yet'); ?></td>    
                  </tr>
                     

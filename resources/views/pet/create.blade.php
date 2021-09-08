@@ -131,7 +131,7 @@
     
                 <div class="form-inline">
                     <label for="weight">Weight (kg)</label>
-                    {{Form::number('height', '', ['placeholder' => 'Pet Weight', 'class' => 'form-control form-control-lg mx-2', 'step' => '.01', 'min' => '.01', 'required' => 'required'])}}
+                    {{Form::number('weight', '', ['placeholder' => 'Pet Weight', 'class' => 'form-control form-control-lg mx-2', 'step' => '.01', 'min' => '.01', 'required' => 'required'])}}
                     
                 </div>
 
@@ -139,7 +139,7 @@
     
                 <div class="form-inline">
                     <label for="weight">Height (cm)</label>
-                    {{Form::number('weight', '', ['placeholder' => 'Pet Height', 'class' => 'form-control form-control-lg mx-2', 'min' => '1', 'required' => 'required'])}}
+                    {{Form::number('height', '', ['placeholder' => 'Pet Height', 'class' => 'form-control form-control-lg mx-2', 'min' => '1', 'required' => 'required'])}}
                     
                 </div>
 
@@ -149,8 +149,8 @@
     
                     <div class="form-inline">
                         <label for="weight">Have been in Clinic?</label>
-                        {{Form::checkbox('checked', 1, true, ['class' => ' ml-2', 'style' => 'width: 25px; height: 25px;'])}}
                         {{Form::hidden('checked', 0)}}
+                        {{Form::checkbox('checked', 1, true, ['class' => ' ml-2', 'style' => 'width: 25px; height: 25px;'])}}
                     </div>
                     
                 @endif

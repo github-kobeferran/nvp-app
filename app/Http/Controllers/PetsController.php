@@ -42,7 +42,7 @@ class PetsController extends Controller
 
     }
 
-    public function store(Request $request){          
+    public function store(Request $request){                
 
         if($request->method() != 'POST')
             return redirect()->back();
@@ -136,9 +136,9 @@ class PetsController extends Controller
             $pet->breed = $request->input('breed');
 
         if($request->has('otherBreed'))
-            $pet->breed = $request->input('colorText');
+            $pet->color = $request->input('colorText');
         else
-            $pet->breed = $request->input('color');           
+            $pet->color = $request->input('color');           
 
         if(auth()->user()->isAdmin())
             $pet->checked = $request->input('checked');
@@ -157,7 +157,7 @@ class PetsController extends Controller
         
         $pet->save();
 
-        return redirect('/createpet/'. $client->user->email)->with('success', 'Pet ' . $pet->name . ', is registered to owner ' . $client->user->name);
+        return redirect('/createpet/'. $client->user->email)->with('success', 'Pet ' . $pet->name . ', is registered to owner ' . $client->user->first_name . ' ' . $client->user->last_name);
 
     }
 

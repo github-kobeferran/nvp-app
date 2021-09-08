@@ -40,4 +40,12 @@
 
         
     </div>
+<?php endif; ?>
+
+<?php if(session('primary')): ?>  
+    <div class="alert alert-primary " role="alert">
+        <?php echo e(session('primary')); ?>
+
+        
+    </div>
 <?php endif; ?><?php /**PATH D:\wamp64\www\nvp-app\resources\views/inc/messages.blade.php ENDPATH**/ ?>

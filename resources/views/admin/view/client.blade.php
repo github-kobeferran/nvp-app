@@ -25,8 +25,22 @@
         <hr>
 
         <div class="form-inline ">
-            <label for="name">Name</label>
-            {{Form::text('name', '', ['placeholder' => 'Name..', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+            <label for="name">First Name</label>
+            {{Form::text('first_name', '', ['placeholder' => 'Last Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+        </div>
+
+        <hr>
+
+        <div class="form-inline ">
+            <label for="name">Middle Name</label>
+            {{Form::text('middle_name', '', ['placeholder' => 'Middle Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+        </div>
+
+        <hr>
+
+        <div class="form-inline ">
+            <label for="name">Last Name</label>
+            {{Form::text('last_name', '', ['placeholder' => 'Last Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
         </div>
 
         <hr>

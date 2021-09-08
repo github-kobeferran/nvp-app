@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Client;
+use App\Models\Employee;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'first_name',
         'email',
         'password',
+        'user_type',
     ];
 
     /**
@@ -58,6 +60,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $this->hasOne(Client::class);
 
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
     }
 
 }

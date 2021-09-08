@@ -25,8 +25,29 @@
         <hr>
 
         <div class="form-inline ">
-            <label for="name">Name</label>
-            {{Form::text('name', '', ['placeholder' => 'Name..', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+            <label for="name">First Name</label>
+            {{Form::text('first_name', '', ['placeholder' => 'First Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+        </div>
+
+        <hr>
+
+        <div class="form-inline ">
+            <label for="name">Middle Name</label>
+            {{Form::text('middle_name', '', ['placeholder' => 'Middle Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+        </div>
+
+        <hr>
+
+        <div class="form-inline ">
+            <label for="name">Last Name</label>
+            {{Form::text('last_name', '', ['placeholder' => 'Last Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+        </div>
+
+        <hr>
+
+        <div class="form-inline ">
+            <label for="name">Email</label>
+            {{Form::email('email', '', ['placeholder' => 'Employee Email Address', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
         </div>
 
         <hr>
@@ -87,12 +108,15 @@
 
             <thead class="bg-warning text-dark">
                 <tr>
-                    <th>Name</th>                
+                    <th>First Name</th>                
+                    <th>Middle Name</th>                
+                    <th>Last Name</th>                
+                    <th>Email</th>                
                     <th>Sex</th>                
                     <th>Date of Birth</th>                
                     <th>Address</th>                
                     <th>Contact</th>                
-                    <th style="width: 20px;">Action</th>                
+                    <th>Action</th>                
                 </tr>
             </thead>
                 
@@ -102,11 +126,14 @@
 
             <tbody id="employee-list" > 
 
-                @foreach (\App\Models\Employee::orderBy('name', 'asc')->get() as $employee)
+                @foreach (\App\Models\Employee::orderBy('created_at', 'asc')->get() as $employee)
                 
                  <tr>
                     
-                    <td>{{ucfirst($employee->name)}}</td>
+                    <td>{{ucfirst($employee->user->first_name)}}</td>
+                    <td>{{ucfirst($employee->user->middle_name)}}</td>
+                    <td>{{ucfirst($employee->user->last_name)}}</td>
+                    <td>{{$employee->user->email}}</td>
                     <td>{{$employee->sex == 0 ? 'Male' : 'Female'}}</td>
                     <td>{{\Carbon\Carbon::parse($employee->dob)->isoFormat('MMM DD, OY') . ' (' . \Carbon\Carbon::parse($employee->dob)->age . ' yrs)'}}</td>
                     <td>{{$employee->address}}</td>
@@ -120,108 +147,120 @@
                             Delete
                         </button>
 
+                        <div class="modal fade"  id="editEmployee-{{$employee->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($employee->name)}}</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                {!!Form::open(['url' => '/employeeupdate'])!!}
+                                <div class="modal-body">
+        
+                                    {{Form::hidden('id', $employee->id)}}
+                                    <div class="form-inline ">
+                                        <label for="name">First Name</label>
+                                        {{Form::text('first_name', $employee->user->first_name, ['placeholder' => 'First Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+                                    </div>
+                            
+                                    <hr>
+                                    <div class="form-inline ">
+                                        <label for="name">Middle Name</label>
+                                        {{Form::text('middle_name', $employee->user->middle_name, ['placeholder' => 'Middle Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+                                    </div>
+                            
+                                    <hr>
+                                    <div class="form-inline ">
+                                        <label for="name">Last Name</label>
+                                        {{Form::text('last_name', $employee->user->last_name, ['placeholder' => 'Last Name', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
+                                    </div>
+                            
+                                    <hr>
+                            
+                                    <div class="form-inline ">
+                                        <label for="dob">Date of Birth</label>                
+                                        {{Form::date('dob', $employee->dob, ['class' => 'form-control ml-2', 'required' => 'required'])}}
+                                    </div>
+                            
+                                    <hr>
+                            
+                                    @if ($employee->sex == 0)
+        
+                                    {{Form::radio('sex', '0', true, ['class' => 'form-control-input ml-2', 'style' => 'width: 18px; height: 18px;'])}}
+                                    <label for="sex" class="mx-2">Male</label>                
+                                    {{Form::radio('sex', '1', false, ['class' => 'form-control-input', 'style' => 'width: 18px; height: 18px;'])}}
+                                    <label for="sex" class="mx-2">Female</label>  
+                                    
+                                @else
+                    
+                                    {{Form::radio('sex', '0', false, ['class' => 'form-control-input ml-2', 'style' => 'width: 18px; height: 18px;'])}}
+                                    <label for="sex" class="mx-2">Male</label>                
+                                    {{Form::radio('sex', '1', true, ['class' => 'form-control-input', 'style' => 'width: 18px; height: 18px;'])}}
+                                    <label for="sex" class="mx-2">Female</label>  
+                                    
+                                @endif
+                                
+                            
+                                    <hr>
+                            
+                                    <div class="form-inline ">
+                            
+                                        <label class="text-muted" for="contact">Contact</label>
+                                        {{Form::text('contact', $employee->contact, ['maxlength' => '15', 'class' => 'form-control ml-2 w-75'])}}                        
+                            
+                                    </div>
+                            
+                                    <hr>
+                            
+                                    <div class="form-inline ">
+                            
+                                        <label class="text-muted" for="adress">Address <span style="font-size: .8em;" class="text-muted">: Street, Baranggay, City/Municipality, Province (seperated by comma)</span></label>
+                                        {{Form::text('address', $employee->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-100 mx-auto'])}}                        
+                            
+                                    </div>
+        
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                                                
+                                    <button type="submit" class="btn btn-primary">Save</button>        
+                                </div>
+                                {!!Form::close()!!}
+                            </div>
+                            </div>
+                        </div>
+        
+                        <div class="modal fade"  id="deleteEmployee-{{$employee->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($employee->name)}}</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                You sure you want to delete employee: <b>{{ucfirst($employee->name)}}</b>?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                {!!Form::open(['url' => '/employeedelete'])!!}
+        
+                                    {{Form::hidden('id', $employee->id)}}
+        
+                                    <button type="submit" class="btn btn-primary">Yes</button>
+        
+                                {!!Form::close()!!}
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
                     </td>
                  </tr>
 
-                 
-                 <div class="modal fade"  id="editEmployee-{{$employee->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($employee->name)}}</b></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        {!!Form::open(['url' => '/employeeupdate'])!!}
-                        <div class="modal-body">
-
-                            {{Form::hidden('id', $employee->id)}}
-                            <div class="form-inline ">
-                                <label for="name">Name</label>
-                                {{Form::text('name', $employee->name, ['placeholder' => 'Name..', 'class' => 'form-control ml-2 w-50', 'required' => 'required'])}}
-                            </div>
-                    
-                            <hr>
-                    
-                            <div class="form-inline ">
-                                <label for="dob">Date of Birth</label>                
-                                {{Form::date('dob', $employee->dob, ['class' => 'form-control ml-2', 'required' => 'required'])}}
-                            </div>
-                    
-                            <hr>
-                    
-                            @if ($employee->sex == 0)
-
-                            {{Form::radio('sex', '0', true, ['class' => 'form-control-input ml-2', 'style' => 'width: 18px; height: 18px;'])}}
-                            <label for="sex" class="mx-2">Male</label>                
-                            {{Form::radio('sex', '1', false, ['class' => 'form-control-input', 'style' => 'width: 18px; height: 18px;'])}}
-                            <label for="sex" class="mx-2">Female</label>  
-                            
-                        @else
-            
-                            {{Form::radio('sex', '0', false, ['class' => 'form-control-input ml-2', 'style' => 'width: 18px; height: 18px;'])}}
-                            <label for="sex" class="mx-2">Male</label>                
-                            {{Form::radio('sex', '1', true, ['class' => 'form-control-input', 'style' => 'width: 18px; height: 18px;'])}}
-                            <label for="sex" class="mx-2">Female</label>  
-                            
-                        @endif
-                        
-                    
-                            <hr>
-                    
-                            <div class="form-inline ">
-                    
-                                <label class="text-muted" for="contact">Contact</label>
-                                {{Form::text('contact', $employee->contact, ['maxlength' => '15', 'class' => 'form-control ml-2 w-75'])}}                        
-                    
-                            </div>
-                    
-                            <hr>
-                    
-                            <div class="form-inline ">
-                    
-                                <label class="text-muted" for="adress">Address</label>
-                                {{Form::text('address', $employee->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-75'])}}                        
-                    
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                                                
-                            <button type="submit" class="btn btn-primary">Save</button>        
-                        </div>
-                        {!!Form::close()!!}
-                    </div>
-                    </div>
-                </div>
-
-                <div class="modal fade"  id="deleteEmployee-{{$employee->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($employee->name)}}</b></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body">
-                        You sure you want to delete employee: <b>{{ucfirst($employee->name)}}</b>?
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        {!!Form::open(['url' => '/employeedelete'])!!}
-
-                            {{Form::hidden('id', $employee->id)}}
-
-                            <button type="submit" class="btn btn-primary">Yes</button>
-
-                        {!!Form::close()!!}
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                    
+                                                      
                 @endforeach
 
             </tbody>

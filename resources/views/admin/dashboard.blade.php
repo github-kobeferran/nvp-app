@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
-{{-- @include('inc.banner') --}}
-
 @section('content')
+
+@if (is_null(\App\Models\Setting::first()))    
+    <?php \App\Models\Setting::create([]); ?>
+@endif
 
 @include('inc.sidebar')
 
@@ -42,7 +44,7 @@
                 @empty(\App\Models\Appointment::all())
                 No Appointments
                 @else
-                Appointment{{\App\Models\Appointment::where('done', 0)->count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Appointment::count()}}</span>
+                Appointment{{\App\Models\Appointment::where('status', 0)->count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Appointment::count()}}</span>
                 @endempty
             </a>
 
@@ -50,18 +52,97 @@
 
     </div>
 
-    
+    <div class="my-1">
+        @include('inc.messages')
+    </div>
 
-    <div class="container text-center my-5 py-2 border border-info">
+    <div class="container my-2 border border-secondary p-2">
+
+        {{Form::open(['url' => 'updatesetting'])}}
+
+        <div class="row no-gutters">
+
+            <div class="col-3">
+                <h2 class="mx-auto">Settings</h2> 
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-success ml-2 rounded-0 ">Save</button>                
+            </div>
+
+        </div>
+        
+
+        <div class="row">
+
+            <div class="col">
+
+                        
+                    <div class="d-flex justify-content-start flex-wrap">
+
+                        <div class="form-inline mx-auto my-2 text-left">
+
+                            <div class="input-group px-2">
+    
+                                <label for="">Max Clients/Day</label>
+                                {{Form::number('max_clients', \App\Models\Setting::first()->max_clients, ['class' => 'form-control ml-2', 'max' => '30', 'min' => '1'])}}
+    
+                            </div>
+    
+                        </div>
+
+                        <div class="form-inline mx-auto my-2 text-left">
+                            <label for="">Appointment Fee</label>
+
+                            <div class="input-group px-2">
+    
+                                &#8369;{{Form::number('appointment_fee', \App\Models\Setting::first()->appointment_fee, ['class' => 'form-control ml-2', 'max' => '5000', 'min' => '50'])}}
+    
+                            </div>
+    
+                        </div>
+
+                        <div class="form-group mx-auto my-2 text-left">
+
+                            <div class="custom-control custom-switch">
+                                <input name="stop_appointments" type="checkbox" class="custom-control-input" id="customSwitch1" {{ \App\Models\Setting::first()->stop_appointments ? 'checked' : ''}}>
+                                <label class="custom-control-label" for="customSwitch1">Stop Accepting Appointments</label>
+                            </div>                                
+    
+                        </div>
+
+                        <div class="form-group mx-auto my-2 text-left">
+
+                            <div class="custom-control custom-switch">
+                                <input name="stop_orders"  type="checkbox" class="custom-control-input" id="customSwitch2" {{ \App\Models\Setting::first()->stop_orders ? 'checked' : ''}}>
+                                <label class="custom-control-label" for="customSwitch2">Stop Accepting Orders</label>
+                            </div>                                
+                                
+    
+                        </div>
+
+                    </div>                    
+
+                    
+                </div>
+                
+            </div>
+            
+            {{Form::close()}}
+    </div>
+    
+    
+    @if (!is_null(\App\Models\User::where('user_type', 0)->first() ))
+
+    <div class="container text-center mb-5 py-2 border border-info">
 
         @if (session('status'))
             <div class="alert alert-success" role="alert">
                 {{ session('status') }}
             </div>
         @endif
-
-        @include('inc.messages')
-
+        
+        
+{{-- ------------------------------APPOINTMENTS FORM --}}
         <h2>Set an Appointment</h2>
 
         {!!Form::open(['url' => '/storeappointment'])!!}     
@@ -70,6 +151,7 @@
         <div class="form-group">
 
             <label for="type">Client</label>
+
 
             <?php                     
                 $users = \App\Models\User::where('user_type', 0)->get();                    
@@ -82,7 +164,7 @@
                 
                 foreach ($users as $user) {
 
-                    $user_clients->push(collect(['name' => $user->first_name . ' ' . substr($user->middle_name, 0, 1) . '. ' . $user->last_name, 'id' => $user->client->id]));
+                    $user_clients->push(collect(['name' => ucfirst($user->first_name) . ' ' . strtoupper(substr($user->middle_name, 0, 1)) . '. ' . ucfirst($user->last_name), 'id' => $user->client->id]));
 
                 }                
                 
@@ -90,29 +172,31 @@
                 $list->all();
 
             ?>        
-             {{Form::select('client_id', $list , null, ['id' => 'clientSelect', 'title' => 'Select Client', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
-
-        </div>   
-        
-        <div class="form-group">
-        
-            <label for="type">Pet</label>   
-        
-            {{Form::select('pet_id', [] , null, ['id' => 'petSelect', 'class' => 'form-control w-25 ml-2 border mx-auto', 'required' => 'required'])}}
-        
+                
+                
+            {{Form::select('client_id', $list , null, ['id' => 'clientSelect', 'title' => 'Select Client', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
+                
         </div>  
-
-        <div class="form-group">
-
-            <label for="type">Service</label>
-
-            <?php                     
          
-                $services = \App\Models\Service::orderBy('desc', 'asc')->get()->pluck('desc', 'id');                
-
+            
+        <div class="form-group">
+            
+            <label for="type">Pet</label>   
+            {{Form::select('pet_id', [] , null, ['title' => 'Choose Pet', 'id' => 'petSelect', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'required' => 'required'])}}            
+            
+        </div>  
+        
+        <div class="form-group">
+            
+            <label for="type">Service</label>
+            
+            <?php                     
+        
+                $services = \App\Models\Service::where('status', 0)->orderBy('desc', 'asc')->get()->pluck('desc', 'id');                
+            
             ?>   
 
-            {{Form::select('service_id', $services , null, ['title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
+            {{Form::select('service_id', $services , null, ['title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
 
         </div>  
 
@@ -120,37 +204,21 @@
         <hr>
 
         <div class="form-group">
-            <label for="">From:</label>
-            <div class="input-group date w-50 mx-auto" id="datetimepicker1" data-target-input="nearest">
-                <input type="text" name="start_time"class="form-control datetimepicker-input" data-target="#datetimepicker1" required/>
-                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
+            <label for="">Appointment Date</label>
+            {{Form::date('date', \Carbon\Carbon::tomorrow(), ['class' => 'form-control text-center mx-auto rounded-0', 'required' => 'required'])}}
+        </div>           
 
-        <div class="form-group">
-            <label for="">To:</label>
-            <div class="input-group date w-50 mx-auto" id="datetimepicker2" data-target-input="nearest">
-                <input type="text" name="end_time"class="form-control datetimepicker-input" data-target="#datetimepicker2" required/>
-                <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
-
-        <hr>
-
-        <button class="btn btn-block btn-primary w-50 mx-auto">Set Appointment</button>
-    
-
-        {!!Form::close()!!}
+        <button class="btn btn-block btn-primary rounded-0 mb-2">Set Appointment</button>
 
 
+    {!!Form::close()!!}
+
+{{-- ------------------------------APPOINTMENTS FORM --}}
     </div>
 
+@endif
 
-    @empty(\App\Models\Appointment::first())
+@empty(\App\Models\Appointment::first())
     
     @else
         
@@ -160,11 +228,8 @@
         
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item border-bottom-0">
-                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Today  <span class="badge badge-info text-white"> {{\App\Models\Appointment::whereBetween('start_time',
-                    [\Carbon\Carbon::now()->startOfDay(), 
-                    \Carbon\Carbon::now()->endOfDay()])->whereBetween('end_time',
-                    [\Carbon\Carbon::now()->startOfDay(), 
-                    \Carbon\Carbon::now()->endOfDay()])->where('done', 0)->count()}}</span></a>
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Today  <span class="badge badge-info text-white">
+                     {{\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->count()}}</span></a>
             </li>
             <li class="nav-item border-bottom-0">
                 <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">This Week ({{\Carbon\Carbon::now()->startOfWeek()->isoFormat('MMM DD') . '-' . \Carbon\Carbon::now()->endOfWeek()->isoFormat('MMM DD')}})</a>
@@ -183,11 +248,7 @@
 
                 <div class="container m-4">  
 
-                    @empty(\App\Models\Appointment::whereBetween('start_time',
-                    [\Carbon\Carbon::now()->startOfDay(), 
-                    \Carbon\Carbon::now()->endOfDay()])->whereBetween('end_time',
-                    [\Carbon\Carbon::now()->startOfDay(), 
-                    \Carbon\Carbon::now()->endOfDay()])->where('done', 0)->first())
+                    @empty(\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->first())
 
                     <b class="text-center">No Appointments Today</b>
 
@@ -196,30 +257,26 @@
                         <table class="table table-bordered">
                             <thead class="bg-warning ">
                                 <tr>
+                                    <th>No.</th>
                                     <th>Service</th>
                                     <th>Client</th>
-                                    <th>Pet</th>
-                                    <th>Time</th>
+                                    <th>Pet</th>                                    
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
-                                @foreach (\App\Models\Appointment::whereBetween('start_time',
-                                                                                [\Carbon\Carbon::now()->startOfDay(), 
-                                                                                \Carbon\Carbon::now()->endOfDay()])->whereBetween('end_time',
-                                                                                [\Carbon\Carbon::now()->startOfDay(), 
-                                                                                \Carbon\Carbon::now()->endOfDay()])->where('done', 0)->orderBy('start_time','asc')->get() as $appointment)
+                                <?php $count = 0; ?>
+                                @foreach (\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->orderBy('created_at','asc')->get() as $appointment)
                                     
                                     <tr>         
+                                        <td>{{++$count}}.</td>    
                                         <td>{{$appointment->service->desc}}</td>    
 
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
+                                        <td><a href="{{url('/user/' . $appointment->pet->owner->user->email )}}">{{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . ucfirst($appointment->pet->owner->user->last_name)}}</a></td>
 
 
-                                        <td><a href="{{url('/pet/'.$appointment->client->user->email . '/' . $appointment->pet->name )}}">{{ucfirst($appointment->pet->name)}}</a></td>
+                                        <td><a href="{{url('/pet/' . $appointment->pet->owner->user->email . '/' . $appointment->pet->name )}}">{{ucfirst($appointment->pet->name)}}</a></td>
                                         
-                                        <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#markAppointment-{{$appointment->id}}">
                                                 Mark as Done
@@ -232,14 +289,14 @@
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header bg-dark text-white">
-                                            <h5 class="modal-title " id="exampleModalLongTitle">{{$appointment->service->desc . ' : ' . $appointment->client->user->first_name . ' ' . $appointment->client->user->last_name}}</h5>
+                                            <h5 class="modal-title " id="exampleModalLongTitle">{{$appointment->service->desc . ' : ' . $appointment->pet->owner->user->first_name . ' ' . $appointment->pet->owner->user->last_name}}</h5>
                                             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                             </div>
                                             <div class="modal-body">
 
-                                                Client : {{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}
+                                                Client : {{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . $appointment->pet->owner->user->last_name}}
                                                 <br>
                                                 Service : {{$appointment->service->desc}}
                                                 <hr>
@@ -272,13 +329,13 @@
                     
                 </div>
             </div>
-            <div class="tab-pane" id="tabs-2" role="tabpanel">
+            {{-- <div class="tab-pane" id="tabs-2" role="tabpanel">
                 <div class="container m-4">
                     @empty(\App\Models\Appointment::whereBetween('start_time',
                     [\Carbon\Carbon::now()->startOfWeek(), 
                     \Carbon\Carbon::now()->endOfWeek()])->whereBetween('end_time',
                     [\Carbon\Carbon::now()->startOfWeek(), 
-                    \Carbon\Carbon::now()->endOfWeek()])->where('done', 0)->first())
+                    \Carbon\Carbon::now()->endOfWeek()])->where('status', 0)->first())
 
                     <b class="text-center">No Appointments this Week</b>
 
@@ -298,7 +355,7 @@
                                                                                 [\Carbon\Carbon::now()->startOfWeek(), 
                                                                                 \Carbon\Carbon::now()->endOfWeek()])->whereBetween('end_time',
                                                                                 [\Carbon\Carbon::now()->startOfWeek(), 
-                                                                                \Carbon\Carbon::now()->endOfWeek()])->where('done', 0)->orderBy('start_time','asc')->get() as $appointment)
+                                                                                \Carbon\Carbon::now()->endOfWeek()])->where('status', 0)->orderBy('start_time','asc')->get() as $appointment)
                                     
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
@@ -343,7 +400,7 @@
                                                                                 [\Carbon\Carbon::now()->startOfMonth(), 
                                                                                 \Carbon\Carbon::now()->endOfMonth()])->whereBetween('end_time',
                                                                                 [\Carbon\Carbon::now()->startOfMonth(), 
-                                                                                \Carbon\Carbon::now()->endOfMonth()])->where('done', 0)->orderBy('start_time','asc')->get() as $appointment)
+                                                                                \Carbon\Carbon::now()->endOfMonth()])->where('status', 0)->orderBy('start_time','asc')->get() as $appointment)
                                     
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
@@ -380,7 +437,7 @@
                             </thead>
                             <tbody>
                                 
-                                @foreach (\App\Models\Appointment::where('done', 1)->orderBy('updated_at', 'desc')->get() as $appointment)
+                                @foreach (\App\Models\Appointment::where('status', 1)->orderBy('updated_at', 'desc')->get() as $appointment)
                                     
                                     <tr>         
                                         <td>{{$appointment->service->desc}}</td>    
@@ -399,7 +456,7 @@
                     @endempty
                     
                 </div>
-            </div>
+            </div> --}}
         </div>
         
 
@@ -411,8 +468,16 @@
 
 <script>
 
+$(function() {
+    $('#datetimepicker1').datetimepicker();
+    $('#datetimepicker2').datetimepicker();
+});
+
 let petSelect = document.getElementById('petSelect');
 let clientSelect = document.getElementById('clientSelect');
+
+let startInput = document.getElementById('startInput');
+let endInput = document.getElementById('endInput');
 
 clientSelect.addEventListener('change', () => {
 
@@ -425,45 +490,26 @@ clientSelect.addEventListener('change', () => {
     xhr.onload = function() {
         if (this.status == 200) {                 
             
-            let pets = JSON.parse(this.responseText);  
-                                        
+            let pets = JSON.parse(this.responseText);              
             
-            let output = `<select name="pet_id" class="custom-select ml-2 border w-25 mx-auto" id="petSelect"   required>`;                                  
+            let output = `<select name="pet_id" data-live-search="true" title="Choose a Pet" class="selectpicker w-25 ml-2 border border-info rounded-0 text-center mx-auto" id="petSelect" required>`;
             for(let i in pets){
-                output+=`<option value="`+ pets[i].id +`" >` + capitalizeFirstLetter(pets[i].name) +`</option>`;                        
+                output+=`<option value="`+ pets[i].id +`">` + capitalizeFirstLetter(pets[i].name) +`</option>`;                        
             }
             output+=`</select>`;         
                     
             
             petSelect.innerHTML = output;
-            
-                        
+
+            $('.selectpicker').selectpicker('refresh');
+
         }              
 
     }
 
     xhr.send(); 
 
-    
-
 });
-
-
-$(function() {
-$('#datetimepicker1').datetimepicker({      
-});
-$('#datetimepicker2').datetimepicker();
-});
-
-
-$(document).ready( function () {
-    // $('#appointment-history').DataTable(
-    //     {
-    //     "order": [[ 0, "desc" ]]
-    // });
-    $('#appointment-history').DataTable();
-} );
-
 
 
 

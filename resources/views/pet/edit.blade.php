@@ -167,8 +167,8 @@
 
             <div class="form-inline mb-4">
                 <label for="weight">Have been in Clinic?</label>
-                {{Form::checkbox('checked', 1, true, ['class' => ' ml-2', 'style' => 'width: 25px; height: 25px;'])}}
                 {{Form::hidden('checked', 0)}}
+                {{Form::checkbox('checked', 1, true, ['class' => ' ml-2', 'style' => 'width: 25px; height: 25px;'])}}
             </div>
             
         @endif

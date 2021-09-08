@@ -36,3 +36,10 @@
         
     </div>
 @endif
+
+@if(session('primary'))  
+    <div class="alert alert-primary " role="alert">
+        {{session('primary')}}
+        
+    </div>
+@endif

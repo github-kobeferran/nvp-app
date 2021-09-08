@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Client;
 use App\Models\User;
+use App\Models\Pet;
+use App\Models\Appointment;
 use Carbon\Carbon;
 use App\Mail\ClientCreated;
 use App\Exports\ClientsExport;
@@ -28,7 +30,9 @@ class ClientsController extends Controller
             return redirect()->back();
     
         $validator = Validator::make($request->all(), [
-            'name' => 'required|regex:/^[\pL\s\-]+$/u|max:100',                                                          
+            'first_name' => 'required|regex:/^[\pL\s\-]+$/u|max:100',                                                          
+            'middle_name' => 'required|regex:/^[\pL\s\-]+$/u|max:100',                                                          
+            'last_name' => 'required|regex:/^[\pL\s\-]+$/u|max:100',                                                          
             'email' => 'required:email',            
         ]);
 
@@ -55,7 +59,7 @@ class ClientsController extends Controller
             'user_id' => $user->id,            
         ]);  
 
-        Mail::to($user)->send(new ClientCreated($name, $pass));
+        Mail::to($user)->send(new ClientCreated($first_name . ' ' . $last_name, $pass));
 
         return redirect()->route('client.view')->with('success', 'Client Added.');
 
@@ -159,13 +163,27 @@ class ClientsController extends Controller
         return Excel::download(new ClientsExport, 'clients ' .  Carbon::now()->isoFormat('OY-MMM-DD') .  '.xlsx');
     }
    
-    public function getPets($id){
+    public function getRemainingPets($id){
 
         $client = Client::find($id);
 
-        return $client->pet->toJson();
+        $pets = $client->pet;
 
-        
+        $valid = collect(new Pet);
+
+        foreach($pets as $pet){
+
+            if(Appointment::where('status', 0)->where('pet_id',  $pet->id)->doesntExist()){
+                $valid->push($pet);
+            }
+
+        }
+
+        $filtered = $valid->filter(function ($value, $key) {
+            return $value != null;
+        });
+
+        return $filtered->all();
 
     }
 
