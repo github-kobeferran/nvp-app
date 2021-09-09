@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\PetType;
 use App\Models\Client;
+use App\Models\Appointment;
 
 class Pet extends Model
 {
@@ -23,6 +24,10 @@ class Pet extends Model
     public function owner()
     {
         return $this->belongsTo(Client::class, 'client_id', 'id');
+    }
+
+    public function appointments(){
+        return $this->hasMany(Appointment::class);
     }
 
     public function setDobStringAttribute($dob){

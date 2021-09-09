@@ -66,7 +66,7 @@ class AppointmentsController extends Controller
         $appointment->date = $request->input('date');  
 
         $transaction = new Transaction;
-        $transaction->pet_id = $request->input('pet_id');
+        $transaction->client_id = $client->id;
         $transaction->type = 'Set Appointment';
         $transaction->has_payment = 1;        
         $transaction->approved_by = auth()->user()->id;   
@@ -162,6 +162,16 @@ class AppointmentsController extends Controller
 
         $appointmentCounts = Appointment::where('date', $request->input('date'))->count();
 
+        if($setting->stop_appointments){
+
+            if(auth()->user()->isAdmin())
+                return redirect()->back()->with('warning', 'Accepting Appointments is currently off, turn it on');
+            else
+                return redirect()->back()->with('warning', 'Sorry, accepting Appointments is currently off');
+
+
+        }
+
         if($appointmentCounts >= $setting->max_clients)
             return redirect()->back()->with('warning', 'Max Clients reached for this Date');
 
@@ -188,7 +198,21 @@ class AppointmentsController extends Controller
 
         $appointment->date = $request->input('date');
                
-        $appointment->save();
+        $appointment->save();        
+
+        $transaction = new Transaction;
+        $transaction->client_id = $appointment->pet->owner->id;
+        $transaction->type = 'Reschedule Appointment';
+        $transaction->has_payment = 0;        
+
+        if(auth()->user()->isAdmin())
+            $transaction->approved_by = auth()->user()->id;
+        
+        
+        $transaction->save();
+
+        $transaction->trans_id = Carbon::now()->isoFormat('YYYY') . '-' . sprintf("%06d", $transaction->id);
+        $transaction->save();
 
         $newdate = Carbon::parse($appointment->date)->isoFormat('MMMM Do, OY');
 
@@ -206,7 +230,10 @@ class AppointmentsController extends Controller
 
         Mail::to($client->user)->send(new AppointmentReschedule($client->user->first_name. ' ' . $client->user->last_name, $appointment->pet->name, $olddate, $newdate, $totalFee, $list));
 
-        return redirect('/admin')->with('info', 'Appointment Schedule updated');
+        if(auth()->user()->isAdmin())
+            return redirect('/admin')->with('info', 'Appointment Schedule updated');
+        else
+            return redirect('/pet/'. $client->user->email . '/'. $appointment->pet->name)->with('info', 'Appointment Schedule of '. $appointment->pet->name . ' updated');
 
     }
 

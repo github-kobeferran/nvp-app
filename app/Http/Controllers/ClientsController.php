@@ -187,4 +187,18 @@ class ClientsController extends Controller
 
     }
 
+    public function viewTransactions($email){
+
+        if(is_null($email)){
+            if(auth()->user()->isAdmin())
+                return redirect('admin');
+            else
+                return view('client.transactions')->with('the_client', User::where('email', auth()->user()->email)->first()->client);            
+        }else {
+            return view('client.transactions')->with('the_client',  User::where('email', auth()->user()->email)->first()->client);            
+        }
+
+
+    }
+
 }

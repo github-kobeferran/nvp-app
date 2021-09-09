@@ -1,5 +1,5 @@
 @component('mail::message')
-Helo, {{ucfirst($clientName)}} and to your lovely {{ucfirst($petName)}}!
+Hello, {{ucfirst($clientName)}} and to your lovely {{ucfirst($petName)}}!
 
 @component('mail::panel')
 Appointment for {{ucfirst($petName)}}'s<br>

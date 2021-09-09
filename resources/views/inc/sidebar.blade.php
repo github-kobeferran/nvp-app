@@ -27,6 +27,7 @@
     @else
 
         <a href="/user">My Profile</a>
+        <a href="/transactions/{{auth()->user()->email}}">Transactions</a>
         
     @endif
 

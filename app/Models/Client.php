@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Pet;
+use App\Models\Transaction;
 
 class Client extends Model
 {
@@ -25,6 +26,12 @@ class Client extends Model
     public function pet()
     {
         return $this->hasMany(Pet::class);
+    }
+
+    public function transactions(){
+
+        return $this->hasMany(Transaction::class)->latest();
+
     }
 
     public function setDobStringAttribute($dob){

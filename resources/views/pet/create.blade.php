@@ -289,6 +289,7 @@ function enableSpecifyBreed(){
         breedSelect.disabled = false;  
         breedTextInput.disabled = true;
         breedTextInput.value = null;
+        breedSelect.value = null;
         breedSelect.required = true;
         breedTextInput.required = false;
     }

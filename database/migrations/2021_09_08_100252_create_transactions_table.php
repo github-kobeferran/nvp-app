@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('trans_id', 11)->nullable();
-            $table->integer('pet_id');
+            $table->integer('client_id');
             $table->string('type', 25);
             $table->boolean('has_payment')->default(0);
             $table->integer('approved_by')->nullable();

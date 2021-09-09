@@ -170,6 +170,12 @@
                 @endif
 
             </div>
+
+            @if(is_null($user->client->image) || is_null($user->client->dob) || is_null($user->client->contact) || is_null($user->client->address) || is_null($user->client->sex))
+
+            <div class="text-muted text-center">update personal information to view pets</div>
+
+            @endif
             
 
             <div class="d-flex flex-wrap">

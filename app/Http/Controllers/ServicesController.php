@@ -79,4 +79,17 @@ class ServicesController extends Controller
 
     }
 
+    public function totalFee($ids){
+
+        $totalfee = 0;
+        $idsArray = str_split($ids);
+
+        foreach($idsArray as $id){
+            $totalfee+= Service::find($id)->price;
+        }
+
+        return $totalfee;
+
+    }
+
 }

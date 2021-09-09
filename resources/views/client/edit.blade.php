@@ -6,7 +6,7 @@
 
 @include('inc.sidebar')
 
-<div class="container mt-2">
+<div class="container my-2">
 
     <h2><a class="btn btn-light" href="/user"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Profile</a>  Personal Information  </h2> 
     
@@ -94,7 +94,7 @@
 
         <hr class="bg-dark" style="opacity: .25">
 
-        <button class="btn btn-block btn-primary float-right mt-4">Submit</button>
+        <button class="btn btn-block btn-primary rounded-0">Save Changes</button>
 
     {!!Form::close()!!}
 

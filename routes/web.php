@@ -33,6 +33,9 @@ Route::get('/createpet/{email}', [App\Http\Controllers\PetsController::class, 'c
 
 Route::any('/registerpetadmin', [App\Http\Controllers\PetsController::class, 'store'])->name('pet.store');
 
+Route::any('/reschedappointment', [App\Http\Controllers\AppointmentsController::class, 'updateSchedule'])->name('appointment.reschedule')->middleware(['verified', 'client.updated']);
+Route::get('/transactions/{email?}', [App\Http\Controllers\ClientsController::class, 'viewTransactions'])->name('client.view.transactions')->middleware(['verified', 'client.updated']);
+
 
 Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->group(function () {
 
@@ -68,7 +71,7 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/clientsexport', [App\Http\Controllers\ClientsController::class, 'export'])->name('client.export');
     Route::get('/getclientpets/{id}', [App\Http\Controllers\ClientsController::class, 'getRemainingPets'])->name('client.pets');
     Route::any('/updatesetting', [App\Http\Controllers\SettingsController::class, 'update'])->name('setting.update');
-    Route::any('/reschedappointment', [App\Http\Controllers\AppointmentsController::class, 'updateSchedule'])->name('appointment.reschedule');
+    
     Route::any('/abadonappointment', [App\Http\Controllers\AppointmentsController::class, 'abandon'])->name('appointment.reschedule');
 
 });
@@ -78,7 +81,8 @@ Route::middleware([App\Http\Middleware\ProtectClientRoutesMiddleware::class])->g
     Route::get('/edituser', [App\Http\Controllers\ClientsController::class, 'edit'])->name('client.edit');
     Route::any('/updateuser', [App\Http\Controllers\ClientsController::class, 'update'])->name('client.update');
     Route::get('/editpet/{name}', [App\Http\Controllers\PetsController::class, 'edit'])->name('pet.edit');
-    Route::any('/updatepet', [App\Http\Controllers\PetsController::class, 'update'])->name('pet.update');
+    Route::any('/updatepet', [App\Http\Controllers\PetsController::class, 'update'])->name('pet.update');    
+    Route::get('/gettotalservicefee/{ids}', [App\Http\Controllers\ServicesController::class, 'totalFee'])->name('service.totalFee');    
 
 });
 
