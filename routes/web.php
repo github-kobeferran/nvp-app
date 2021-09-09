@@ -68,6 +68,8 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/clientsexport', [App\Http\Controllers\ClientsController::class, 'export'])->name('client.export');
     Route::get('/getclientpets/{id}', [App\Http\Controllers\ClientsController::class, 'getRemainingPets'])->name('client.pets');
     Route::any('/updatesetting', [App\Http\Controllers\SettingsController::class, 'update'])->name('setting.update');
+    Route::any('/reschedappointment', [App\Http\Controllers\AppointmentsController::class, 'updateSchedule'])->name('appointment.reschedule');
+    Route::any('/abadonappointment', [App\Http\Controllers\AppointmentsController::class, 'abandon'])->name('appointment.reschedule');
 
 });
 

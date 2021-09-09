@@ -22,6 +22,7 @@ class CreatePetsTable extends Migration
             $table->integer('client_id')->default(0);
             $table->integer('pet_type_id');  
             $table->timestamps();
+            $table->softDeletesTz($column = 'deleted_at', $precision = 0);
         });
     }
 

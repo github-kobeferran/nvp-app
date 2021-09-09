@@ -19,7 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('pet_id');
             $table->string('type', 25);
             $table->boolean('has_payment')->default(0);
-            $table->integer('approved_by');
+            $table->integer('approved_by')->nullable();
             $table->timestamps();
         });
 

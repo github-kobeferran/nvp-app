@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\PetType;
 use App\Models\Client;
 
 class Pet extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $appends = ['dob_string' => null, 'age' => null];
     

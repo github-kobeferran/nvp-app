@@ -79,7 +79,7 @@
                             <td>&#8369; {{$service->price}}</td>
                             <td colspan="2" >
 
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editService-{{$service->id}}">
+                                <button type="button" class="btn btn-primary mb-1" data-toggle="modal" data-target="#editService-{{$service->id}}">
                                     Edit
                                     </button> 
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteService-{{$service->id}}">

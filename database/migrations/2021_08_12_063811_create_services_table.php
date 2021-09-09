@@ -23,8 +23,7 @@ class CreateServicesTable extends Migration
 
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();                        
-            $table->integer('pet_id');
-            $table->integer('service_id');            
+            $table->integer('pet_id');                     
             $table->date('date');   
             $table->boolean('status')->default(0);
             $table->integer('transaction_id');

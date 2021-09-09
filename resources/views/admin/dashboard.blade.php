@@ -60,31 +60,34 @@
 
         {{Form::open(['url' => 'updatesetting'])}}
 
-        <div class="row no-gutters">
+        <div class="row ">
 
             <div class="col-3">
                 <h2 class="mx-auto">Settings</h2> 
             </div>
             <div class="col">
-                <button type="submit" class="btn btn-success ml-2 rounded-0 ">Save</button>                
+                <button id="submitButton" type="submit" class="btn btn-success ml-2 rounded-0 " disabled>Save changes</button>                
+            </div>
+            <div class="col-2 text-right mr-2">
+                <button onclick="toggleSettingsPanel()" type="button" class="btn btn-sm btn-dark ml-2  "><i  id="caret" class="fa fa-caret-down" aria-hidden="true"></i></button>                
             </div>
 
         </div>
         
 
-        <div class="row">
+        <div class="row d-none " id="settingspanel">
 
-            <div class="col">
+            <div class="col ">
 
                         
-                    <div class="d-flex justify-content-start flex-wrap">
+                    <div class="d-flex justify-content-start flex-wrap bg-dark text-white border border-primary">
 
                         <div class="form-inline mx-auto my-2 text-left">
 
                             <div class="input-group px-2">
     
                                 <label for="">Max Clients/Day</label>
-                                {{Form::number('max_clients', \App\Models\Setting::first()->max_clients, ['class' => 'form-control ml-2', 'max' => '30', 'min' => '1'])}}
+                                {{Form::number('max_clients', \App\Models\Setting::first()->max_clients, ['class' => 'form-control ml-2 rounded-0', 'max' => '30', 'min' => '1'])}}
     
                             </div>
     
@@ -95,7 +98,7 @@
 
                             <div class="input-group px-2">
     
-                                &#8369;{{Form::number('appointment_fee', \App\Models\Setting::first()->appointment_fee, ['class' => 'form-control ml-2', 'max' => '5000', 'min' => '50'])}}
+                                &#8369;{{Form::number('appointment_fee', \App\Models\Setting::first()->appointment_fee, ['class' => 'form-control ml-2 rounded-0', 'max' => '5000', 'min' => '50'])}}
     
                             </div>
     
@@ -195,8 +198,8 @@
                 $services = \App\Models\Service::where('status', 0)->orderBy('desc', 'asc')->get()->pluck('desc', 'id');                
             
             ?>   
-
-            {{Form::select('service_id', $services , null, ['title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
+            
+            {{Form::select('services[]', $services , null, ['multiple' => 'multiple', 'title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}            
 
         </div>  
 
@@ -226,27 +229,34 @@
         
         <h3 class="mt-3 text-center " style="text-shadow: 1px 1px 10px rgb(112, 112, 112);">Appointments</h3>
         
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs mb-2" role="tablist">
             <li class="nav-item border-bottom-0">
-                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Today  <span class="badge badge-info text-white">
-                     {{\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->count()}}</span></a>
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
+                    Today
+                    <span class="badge badge-warning">
+                        {{\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->count()}}
+                    </span>
+                </a>
             </li>
             <li class="nav-item border-bottom-0">
-                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">This Week ({{\Carbon\Carbon::now()->startOfWeek()->isoFormat('MMM DD') . '-' . \Carbon\Carbon::now()->endOfWeek()->isoFormat('MMM DD')}})</a>
+                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">
+                    Tomorrow
+                    <span class="badge badge-info text-white">
+                        {{\App\Models\Appointment::where('date', \Carbon\Carbon::tomorrow()->toDateString())->where('status', 0)->count()}}
+                    </span>
+                </a>
             </li>
             <li class="nav-item border-bottom-0">
-                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Month of {{\Carbon\Carbon::now()->monthName}}</a>
+                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">All Appointments</a>
             </li>
-            <li class="nav-item border-bottom-0">
-                <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">Appointment History</a>
-            </li>
-        </ul><!-- Tab panes -->
-
+            
+        </ul>
+        <!-- Tab panes -->
 
         <div class="tab-content">
             <div class="tab-pane active" id="tabs-1" role="tabpanel">
 
-                <div class="container m-4">  
+                <div class="container ">  
 
                     @empty(\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->first())
 
@@ -254,219 +264,433 @@
 
                     @else
 
-                        <table class="table table-bordered">
-                            <thead class="bg-warning ">
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Service</th>
-                                    <th>Client</th>
-                                    <th>Pet</th>                                    
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $count = 0; ?>
-                                @foreach (\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->orderBy('created_at','asc')->get() as $appointment)
-                                    
-                                    <tr>         
-                                        <td>{{++$count}}.</td>    
-                                        <td>{{$appointment->service->desc}}</td>    
+                        <div class="table-responsive">
 
-                                        <td><a href="{{url('/user/' . $appointment->pet->owner->user->email )}}">{{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . ucfirst($appointment->pet->owner->user->last_name)}}</a></td>
-
-
-                                        <td><a href="{{url('/pet/' . $appointment->pet->owner->user->email . '/' . $appointment->pet->name )}}">{{ucfirst($appointment->pet->name)}}</a></td>
+                            <table id="today-appointments" class="table table-bordered">
+                                <thead class="bg-warning ">
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Service</th>
+                                        <th>Client</th>
+                                        <th>Pet</th>                                    
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $count = 0; ?>
+                                    @foreach (\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->orderBy('created_at','asc')->get() as $appointment)
                                         
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#markAppointment-{{$appointment->id}}">
-                                                Mark as Done
-                                            </button> 
-                                        </td>
-                                    </tr>  
-                                    
-                                    
-                                    <div class="modal fade"  id="markAppointment-{{$appointment->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-dark text-white">
-                                            <h5 class="modal-title " id="exampleModalLongTitle">{{$appointment->service->desc . ' : ' . $appointment->pet->owner->user->first_name . ' ' . $appointment->pet->owner->user->last_name}}</h5>
-                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            </div>
-                                            <div class="modal-body">
+                                        <tr>         
+                                            <td>{{++$count}}.</td>    
+                                            <td>
+                                                @foreach ($appointment->services() as $service)
+                                                
+                                                    @if($loop->last)
+                                                        {{$service->desc}}
+                                                    @else                                                
+                                                        {{$service->desc . ', '}}
+                                                    @endif
+                                                    
+                                                @endforeach
+                                            </td>    
 
-                                                Client : {{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . $appointment->pet->owner->user->last_name}}
-                                                <br>
-                                                Service : {{$appointment->service->desc}}
-                                                <hr>
-                                                Fee : {{$appointment->service->price}}
-                                                <hr>
-                                                Mark this appointment as <b>DONE?</b>
+                                            <td><a href="{{url('/user/' . $appointment->pet->owner->user->email )}}">{{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . ucfirst($appointment->pet->owner->user->last_name)}}</a></td>
 
-                                            </div>
-                                            {!!Form::open(['url' => '/appointmentdone'])!!}
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                
-                                                {{Form::hidden('id', $appointment->id)}}
-                                                {{Form::hidden('pet_id', $appointment->pet->id)}}
-                
-                                                <button type="submit" class="btn btn-primary">Yes</button>
-                
-                                            {!!Form::close()!!}
-                                            </div>
-                                        </div>
-                                        </div>
-                                    </div>
+
+                                            <td><a href="{{url('/pet/' . $appointment->pet->owner->user->email . '/' . $appointment->pet->name )}}" class="text-danger">{{ucfirst($appointment->pet->name)}}</a></td>
+                                            
+                                            <td>
+                                                <button type="button" class="btn btn-success mb-1" data-toggle="modal" data-target="#markAppointment-{{$appointment->id}}">
+                                                    Mark as Done
+                                                </button> 
+                                                <button type="button" class="btn btn-secondary mb-1" data-toggle="modal" data-target="#abandon-{{$appointment->id}}">
+                                                    Mark as Abandoned
+                                                </button> 
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reschedule-{{$appointment->id}}">
+                                                    Reschedule
+                                                </button> 
+
+                                                <div class="modal fade"  id="markAppointment-{{$appointment->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-success text-white">
+                                                                <h5 class="modal-title " id="exampleModalLongTitle"><span class="text-dark">Appointment of </span>{{$appointment->pet->owner->user->first_name . ' ' . $appointment->pet->owner->user->last_name}} : {{$appointment->pet->name}}</h5>
+                                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+        
+                                                            {!!Form::open(['url' => '/appointmentdone'])!!}
+                                                                <div class="modal-body">
+        
+                                                                    <span class="text-muted">Client</span> : {{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . $appointment->pet->owner->user->last_name}}
+                                                                    <br>
+                                                                    <div>
+                                                                        <span class="text-muted">Services</span> :  
+                                                                        <?php $fee = 0; ?>
+                                                                        @foreach ($appointment->services() as $service)
+                                                                            <?php $fee+= $service->price; ?>
+                                                                            @if($loop->last)
+                                                                                {{$service->desc}}
+                                                                            @else                                                
+                                                                                {{$service->desc . ', '}}
+                                                                            @endif
+                                                                        
+                                                                        @endforeach
+                                                                    </div>
+                                                                    <hr>
+                                                                    <span><span class="text-muted">Fee</span> : &#8369; {{$fee}}</span>
+                                                                    <hr>
+                                                                    <span class="text-muted">Mark this appointment as </span><b>DONE?</b>
+        
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="submit" class="btn btn-success">Yes</button>                    
+                                                                    
+                                                                    {{Form::hidden('id', $appointment->id)}}
+                                                                    {{Form::hidden('pet_id', $appointment->pet->id)}}
+                                                                    
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            {!!Form::close()!!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade"  id="abandon-{{$appointment->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-secondary text-white">
+                                                                <h5 class="modal-title " id="exampleModalLongTitle">Mark as abandon</h5>
+                                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+        
+                                                            {!!Form::open(['url' => '/abadonappointment'])!!}
+                                                                <div class="modal-body">
+                                                                                                                                            
+                                                                    {{Form::hidden('id', $appointment->id)}}                                                                                                  
+
+                                                                    <div>
+                                                                        <span><span class="text-muted">Appointment of</span> {{$appointment->pet->owner->user->first_name . ' ' . $appointment->pet->owner->user->last_name}} : {{$appointment->pet->name}}</span>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <span><span class="text-muted">Mark this appointment as </span>ABANDONED?</span>
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                                
+                                                                <div class="modal-footer">
+                                                                    <button type="submit" class="btn btn-outline-secondary">Yes</button>                    
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            {!!Form::close()!!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade"  id="reschedule-{{$appointment->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-primary text-white">
+                                                                <h5 class="modal-title " id="exampleModalLongTitle">Re schedule appointment of Pet {{$appointment->pet->name}}</h5>
+                                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+        
+                                                            {!!Form::open(['url' => '/reschedappointment'])!!}
+                                                                <div class="modal-body">
+                                                                        
+                                                                    <div class="form-group">
+                                                                        Submitted appointment date: {{\Carbon\Carbon::parse($appointment->date)->isoFormat('MMM DD OY') }}
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <span class="text-muted">Set new appointment date</span>
+                                                                        {{Form::date('date', $appointment->date, ['class' => 'form-control rounded-0'])}}
+                                                                    </div>
+
+                                                                    {{Form::hidden('id', $appointment->id)}}                                                                                                  
+                                                                    {{Form::hidden('client_id', $appointment->pet->owner->id)}}                                                                                                  
+                                                                    
+                                                                </div>
+                                                                
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Save Changes</button>                    
+                                                                </div>
+                                                            {!!Form::close()!!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>                                                                                                                                                         
+
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <script>
+
+                            $(document).ready(function() {
+                                $('#today-appointments').DataTable();
+                            } );
                             
-
-                                @endforeach
-                            </tbody>
-                        </table>
+                        </script>
                         
                     @endempty
                     
                 </div>
             </div>
-            {{-- <div class="tab-pane" id="tabs-2" role="tabpanel">
-                <div class="container m-4">
-                    @empty(\App\Models\Appointment::whereBetween('start_time',
-                    [\Carbon\Carbon::now()->startOfWeek(), 
-                    \Carbon\Carbon::now()->endOfWeek()])->whereBetween('end_time',
-                    [\Carbon\Carbon::now()->startOfWeek(), 
-                    \Carbon\Carbon::now()->endOfWeek()])->where('status', 0)->first())
 
-                    <b class="text-center">No Appointments this Week</b>
+            
+
+
+            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                <div class="container">
+                  
+                    @empty(\App\Models\Appointment::where('date', \Carbon\Carbon::tomorrow()->toDateString())->where('status', 0)->first())
+
+                    <b class="text-center">No Appointments Tomorrow</b>
 
                     @else
 
-                        <table class="table table-bordered">
-                            <thead class="bg-warning ">
-                                <tr>
-                                    <th>Service</th>
-                                    <th>Client</th>
-                                    <th>Time</th>                                                                        
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                                @foreach (\App\Models\Appointment::whereBetween('start_time',
-                                                                                [\Carbon\Carbon::now()->startOfWeek(), 
-                                                                                \Carbon\Carbon::now()->endOfWeek()])->whereBetween('end_time',
-                                                                                [\Carbon\Carbon::now()->startOfWeek(), 
-                                                                                \Carbon\Carbon::now()->endOfWeek()])->where('status', 0)->orderBy('start_time','asc')->get() as $appointment)
-                                    
-                                    <tr>         
-                                        <td>{{$appointment->service->desc}}</td>    
+                        <div class="table-responsive">
 
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
+                            <table id="tomorrow-appointments" class="table table-bordered">
+                                <thead class="bg-info text-white">
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Service</th>
+                                        <th>Client</th>
+                                        <th>Pet</th>                                    
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $count = 0; ?>
+                                    @foreach (\App\Models\Appointment::where('date', \Carbon\Carbon::tomorrow()->toDateString())->where('status', 0)->orderBy('created_at','asc')->get() as $appointment)
                                         
-                                        <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('MMM D, OY') . ' ' . \Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
-                                       
-                                    </tr>  
-                                                                                                       
+                                        <tr>         
+                                            <td>{{++$count}}.</td>    
+                                            <td>
+                                                @foreach ($appointment->services() as $service)
+                                                
+                                                    @if($loop->last)
+                                                        {{$service->desc}}
+                                                    @else                                                
+                                                        {{$service->desc . ', '}}
+                                                    @endif
+                                                    
+                                                @endforeach
+                                                
+                                            </td>    
+    
+                                            <td><a href="{{url('/user/' . $appointment->pet->owner->user->email )}}">{{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->middle_name, 0, 1) . '. ' . ucfirst($appointment->pet->owner->user->last_name)}}</a></td>
+    
+    
+                                            <td><a href="{{url('/pet/' . $appointment->pet->owner->user->email . '/' . $appointment->pet->name )}}" class="text-danger">{{ucfirst($appointment->pet->name)}}</a></td>
+                                            
+                                            <td>                                          
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reschedule-{{$appointment->id}}">
+                                                    Reschedule
+                                                </button> 
 
-                                @endforeach
-                            </tbody>
-                        </table>
+                                                <div class="modal fade"  id="reschedule-{{$appointment->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-primary text-white">
+                                                                <h5 class="modal-title " id="exampleModalLongTitle">Re schedule appointment of Pet {{$appointment->pet->name}}</h5>
+                                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+        
+                                                            {!!Form::open(['url' => '/reschedappointment'])!!}
+                                                                <div class="modal-body">
+                                                                        
+                                                                    <div class="form-group">
+                                                                        Submitted appointment date: {{\Carbon\Carbon::parse($appointment->date)->isoFormat('MMM DD OY') }}
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <span class="text-muted">Set new appointment date</span>
+                                                                        {{Form::date('date', $appointment->date, ['class' => 'form-control rounded-0'])}}
+                                                                    </div>
+        
+                                                                    {{Form::hidden('id', $appointment->id)}}                                                                                                  
+                                                                    {{Form::hidden('client_id', $appointment->pet->owner->id)}}                                                                                                  
+                                                                    
+                                                                </div>
+                                                                
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Save Changes</button>                    
+                                                                </div>
+                                                            {!!Form::close()!!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        
+                                            </td>
+                                        </tr>  
+                                        
+                                        
+    
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <script>
+
+                            $(document).ready(function() {
+                                $('#tomorrow-appointments').DataTable();
+                            } );
+                            
+                        </script>
                         
                     @endempty
+
                 </div>
             </div>
+            
             <div class="tab-pane" id="tabs-3" role="tabpanel">
-                <div class="container m-4">
-                    @empty(\App\Models\Appointment::whereBetween('start_time',
-                    [\Carbon\Carbon::now()->startOfDay(), 
-                    \Carbon\Carbon::now()->endOfDay()])->whereBetween('end_time',
-                    [\Carbon\Carbon::now()->startOfDay(), 
-                    \Carbon\Carbon::now()->endOfDay()])->where('done', 0)->first())
-
-                    <b class="text-center">No Appointments Today</b>
-
-                    @else
-
-                        <table class="table table-bordered">
-                            <thead class="bg-warning ">
-                                <tr>
-                                    <th>Service</th>
-                                    <th>Client</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                                @foreach (\App\Models\Appointment::whereBetween('start_time',
-                                                                                [\Carbon\Carbon::now()->startOfMonth(), 
-                                                                                \Carbon\Carbon::now()->endOfMonth()])->whereBetween('end_time',
-                                                                                [\Carbon\Carbon::now()->startOfMonth(), 
-                                                                                \Carbon\Carbon::now()->endOfMonth()])->where('status', 0)->orderBy('start_time','asc')->get() as $appointment)
-                                    
-                                    <tr>         
-                                        <td>{{$appointment->service->desc}}</td>    
-
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
-                                        
-                                        <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('MMM D, OY') . ' ' . \Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
-                                    </tr>                                                                    
-                            
-
-                                @endforeach
-                            </tbody>
-                        </table>
-                        
-                    @endempty
-                </div>
-            </div>
-            <div class="tab-pane" id="tabs-4" role="tabpanel">
-                <div class="container m-4">
-                    
+                <div class="container">
                     @empty(\App\Models\Appointment::first())
 
+                    <b class="text-center">No Appointments on recorded</b>
+
                     @else
 
-                        <i class="fa fa-history" aria-hidden="true"></i> Appointment History
+                        <div class="table-responsive">
 
-                        <table id="appointment-history" class="table table-bordered">
-                            <thead class="bg-secondary text-white">
-                                <tr>
-                                    <th>Service</th>
-                                    <th>Client</th>
-                                    <th>Schedule</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                                @foreach (\App\Models\Appointment::where('status', 1)->orderBy('updated_at', 'desc')->get() as $appointment)
+                            <table id="all-appointments" class="table table-bordered">
+                                <thead class="bg-secondary text-white">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Service</th>
+                                        <th>Client</th>
+                                        <th>Pet</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     
-                                    <tr>         
-                                        <td>{{$appointment->service->desc}}</td>    
-
-                                        <td><a href="{{url('/user/'.$appointment->client->user->email )}}">{{$appointment->client->user->first_name . ' ' . substr($appointment->client->user->first_name, 0, 1) . '. ' . $appointment->client->user->last_name}}</a></td>
+                                    @foreach (\App\Models\Appointment::orderBy('status', 'asc')->orderBy('created_at', 'desc')->get() as $appointment)
                                         
-                                        <td>{{\Carbon\Carbon::parse($appointment->start_time)->isoFormat('MMM D, OY') . ' ' . \Carbon\Carbon::parse($appointment->start_time)->isoFormat('h:mm a') . ' - ' . \Carbon\Carbon::parse($appointment->end_time)->isoFormat('h:mm a') }}</td>
-                                    
-                                    </tr>  
+                                    <tr>         
+                                            <td>{{\Carbon\Carbon::parse($appointment->date)->isoFormat('Do, MMMM OY')}}</td>
+                                            <td>
+                                               
+                                                @foreach ($appointment->services() as $service)
+                                                    
+                                                    @if($loop->last)
+                                                        {{$service->desc}}
+                                                    @else                                                
+                                                        {{$service->desc . ', '}}
+                                                    @endif
+                                                
+                                                @endforeach
+                                                
+                                            </td>    
+    
+                                            <td><a href="{{url('/user/'.$appointment->pet->owner->user->email )}}">{{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->first_name, 0, 1) . '. ' . $appointment->pet->owner->user->last_name}}</a></td>
+                                            <td><a href="{{url('/pet/' . $appointment->pet->owner->user->email . '/' . $appointment->pet->name )}}" class="text-danger">{{ucfirst($appointment->pet->name)}}</a></td>
+                                            
+                                            <td>
+                                                @switch($appointment->status)
+                                                    @case(0)
+                                                        <span class="text-info">Pending</span>
+                                                                                            
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reschedthis-{{$appointment->id}}">
+                                                            Reschedule
+                                                        </button> 
+        
+                                                        <div class="modal fade"  id="reschedthis-{{$appointment->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header bg-primary text-white">
+                                                                        <h5 class="modal-title " id="exampleModalLongTitle">Re schedule appointment of Pet {{$appointment->pet->name}}</h5>
+                                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                
+                                                                    {!!Form::open(['url' => '/reschedappointment'])!!}
+                                                                        <div class="modal-body">
+                                                                                
+                                                                            <div class="form-group">
+                                                                                Submitted appointment date: {{\Carbon\Carbon::parse($appointment->date)->isoFormat('MMM DD OY') }}
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <span class="text-muted">Set new appointment date</span>
+                                                                                {{Form::date('date', $appointment->date, ['class' => 'form-control rounded-0'])}}
+                                                                            </div>
+                
+                                                                            {{Form::hidden('id', $appointment->id)}}                                                                                                  
+                                                                            {{Form::hidden('client_id', $appointment->pet->owner->id)}}                                                                                                  
+                                                                            
+                                                                        </div>
+                                                                        
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>                    
+                                                                        </div>
+                                                                    {!!Form::close()!!}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        @break
+                                                    @case(1)
+                                                        <span class="text-success">Done</span>
+                                                        @break
+                                                    @case(2)
+                                                        <span class="text-secondary">Abandoned</span>
+                                                        @break                                                                                                    
+                                                @endswitch
+                                            </td>
+                                        </tr>                                                                    
+                                
+    
+                                    @endforeach
+                                </tbody>
+                            </table>
 
-                                @endforeach
-                            </tbody>
-                        </table>
-
+                        </div>
                         
+                        <script>
+
+                            $(document).ready(function() {
+                                $('#all-appointments').DataTable();
+                            } );
+                            
+                        </script>
+
                     @endempty
-                    
                 </div>
-            </div> --}}
+            </div>
+
+          
         </div>
         
 
     </div>
-    @endempty
+    
+@endempty
 
 
 </div>
 
 <script>
+
+
 
 $(function() {
     $('#datetimepicker1').datetimepicker();
@@ -478,6 +702,10 @@ let clientSelect = document.getElementById('clientSelect');
 
 let startInput = document.getElementById('startInput');
 let endInput = document.getElementById('endInput');
+
+let settingspanel = document.getElementById('settingspanel');
+let caret = document.getElementById('caret');
+let submitButton = document.getElementById('submitButton');
 
 clientSelect.addEventListener('change', () => {
 
@@ -511,6 +739,24 @@ clientSelect.addEventListener('change', () => {
 
 });
 
+
+function toggleSettingsPanel(){
+
+    if(settingspanel.classList.contains('d-none')){
+
+        settingspanel.classList.remove('d-none');
+        caret.className = 'fa fa-caret-up';
+        submitButton.disabled = false;        
+
+    } else{
+
+        settingspanel.classList.add('d-none');
+        caret.className = 'fa fa-caret-down';
+        submitButton.disabled = true;        
+
+    }
+
+}
 
 
 </script>
