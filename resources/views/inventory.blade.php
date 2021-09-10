@@ -26,7 +26,7 @@
                     
                     @foreach (\App\Models\Item::orderBy('quantity', 'desc')->get() as $item)
 
-                        <div class="card p-3 bg-white mx-auto border border-secondary"><i class="fa fa-circle {{$item->quantity > 0 ? 'text-success' : 'text-dark'}} "></i>
+                        <div class="card p-3 bg-white mx-auto border border-secondary"><i class="fa fa-circle {{$item->quantity > 0 ? 'text-success' : 'text-secondary'}} "></i>
                             <div class="about-product text-center mt-2">
                                 @if (is_null($item->image))
                                     <img src="{{url('storage/images/item/no-image-item.jpg')}}" width="100" height="100">                                    
@@ -41,22 +41,29 @@
                                 </div>
                             </div>
                             <div class="stats mt-2 border-bottom">
-                                <div class="d-flex justify-content-end p-price"><span>&#8369; {{$item->reg_price}}</span></div>
+                                <div class="d-flex justify-content-end p-price"><span>&#8369; {{number_format($item->reg_price, 2)}}</span></div>
                             </div>
                             <div class="input-group mb-3">
+
                                 <div class="input-group-prepend">
-                                  <button onclick="decreaseQuantity(document.getElementById('quantity-{{$item->id}}'))" class="btn btn-outline-info" type="button">-</button>
+                                  <button onclick="decreaseQuantity(document.getElementById('quantity-{{$item->id}}'))" class="btn btn-outline-info" type="button" {{$item->quantity < 1 ? 'disabled' : ''}}>-</button>
                                 </div>
-                                <input id="quantity-{{$item->id}}" type="number" min="1" max="{{$item->quantity}}" class="form-control w-25 text-center" value="1">
+                                <input id="quantity-{{$item->id}}" type="number" min="1" max="{{$item->quantity}}" class="form-control w-25 text-center" value="{{$item->quantity < 1 ? '0' : '1'}}" {{$item->quantity < 1 ? 'disabled' : ''}}>
                                 <div class="input-group-append">
-                                    <button onclick="increaseQuantity(document.getElementById('quantity-{{$item->id}}'), {{$item->quantity}})" class="btn btn-outline-info" type="button">+</button>
+                                    <button onclick="increaseQuantity(document.getElementById('quantity-{{$item->id}}'), {{$item->quantity}})" class="btn btn-outline-info" type="button" {{$item->quantity < 1 ? 'disabled' : ''}}>+</button>
                                 </div>
-                            </div>
-                            <div class="text-center">                                
-                                <span class="text-muted" style="font-size: .8em !important;">{{$item->quantity}} items left</span>
+
                             </div>
 
-                            <button class="btn btn-block btn-primary rounded-0">Buy now</button>
+                            <div class="text-center">                                
+                                @if ($item->quantity > 0)
+                                    <span class="text-muted" style="font-size: .8em !important;">{{$item->quantity}} items left</span>
+                                @else
+                                    <span class="text-muted" style="font-size: .8em !important;">Out of stock</span>
+                                @endif
+                            </div>
+
+                            <button class="btn btn-block btn-primary rounded-0" {{$item->quantity < 1 ? 'disabled' : ''}}>Buy now</button>
                         </div>
                         
                     @endforeach
