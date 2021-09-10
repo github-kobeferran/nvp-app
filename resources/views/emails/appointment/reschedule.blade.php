@@ -8,7 +8,7 @@ Appointment for {{ucfirst($petName)}}'s<br>
 with the total fee of &#8369;{{$fee}}<br>
 and the previous appointment date of {{$olddate}} <br>
 <br>
-is rescheduled to {{$newdate}} <br>
+is rescheduled to {{$newdate}}, we are open 8am-5pm <br>
 FCFS. See you!
 @endcomponent
 

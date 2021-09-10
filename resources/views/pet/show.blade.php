@@ -4,6 +4,26 @@
 
 @section('content')
 
+<script>
+
+function getSelectValues(select) {
+    let result = [];
+    let options = select && select.options;
+    let opt;
+
+    for (let i=0, iLen=options.length; i<iLen; i++) {
+        opt = options[i];
+
+        if (opt.selected) {
+        result.push(opt.value || opt.text);
+        }
+    }
+    return result;
+
+}
+
+</script>
+
 <div class="my-1 text-center">
     @include('inc.messages')
 </div>
@@ -98,72 +118,127 @@
 
     <hr>
 
-    @if (\App\Models\Appointment::where('status', 0)->where('pet_id', $pet->id)->doesntExist())    
-        <div class="row">
+    @if (!auth()->user()->isAdmin())
+        @if (\App\Models\Appointment::where('status', 0)->where('pet_id', $pet->id)->doesntExist())    
+            <div class="row">
 
-            <div class="col text-center">
+                <div class="col text-center">
 
-                <h4>Schedule an Appointment for {{$pet->name}}</h4>
-
-                {{Form::open(['url' => 'setappointment'])}}   
-                
-                <div class="form-group">
-
-                    <label for="type">Date <span id="dateStatus"></span></label>
-
-                    {{Form::date('date', \Carbon\Carbon::tomorrow(), ['id' => 'dateInput', 'class' => 'form-control text-center w-50 mx-auto'])}}
-
-                </div>
-
-                <div class="form-group">
-            
-                    <label for="type">Service</label>
+                    <h4>Schedule an Appointment for {{$pet->name}}</h4>                    
                     
-                    <?php                     
-                
-                        $services = \App\Models\Service::where('status', 0)->orderBy('desc', 'asc')->get()->pluck('desc', 'id');                                    
-                    ?>   
-                    
-                    {{Form::select('services[]', $services , null, ['id' => 'serviceSelect', 'multiple' => 'multiple', 'title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}            
-        
-                </div>  
+                    <div class="form-group">
 
-                <div id="costDiv" class="form-group d-none">
+                        <label for="type">Date <span id="dateStatus" class="text-success"></span></label>
 
-                    <label for=""><span class="text-muted">Service Cost: </span> &#8369;<span id="costLabel">12</span></label>
+                        {{Form::date('date', \Carbon\Carbon::tomorrow(), ['id' => 'dateInput', 'class' => 'form-control text-center w-50 mx-auto'])}}
 
-                    <div>
-                        <button type="button" data-toggle="modal" data-target="#payPal" class="btn btn-primary btn-block w-50 rounded-0 mx-auto">Set Appointment</button>
                     </div>
 
-                    <div class="modal fade" id="payPal" tabindex="-1" role="dialog" aria-labelledby="payPalTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLongTitle">Set An Appointment</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              ...
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
-                          </div>
+                    <div class="form-group">
+                
+                        <label for="type">Service</label>
+                        
+                        <?php                     
+                    
+                            $services = \App\Models\Service::where('status', 0)->orderBy('desc', 'asc')->get()->pluck('desc', 'id');                                    
+                        ?>   
+                        
+                        {{Form::select('services[]', $services , null, ['id' => 'serviceSelect', 'multiple' => 'multiple', 'title' => 'Select Service', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border border-info rounded-0', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}            
+            
+                    </div>  
+
+                    <div id="costDiv" class="form-group d-none">
+
+                        <label for=""><span class="text-muted">Service Cost: </span> &#8369;<span id="costLabel">12</span></label>
+
+                        <div>
+                            <button id="setAppointmentButton" type="button" data-toggle="modal" data-target="#payPal" class="btn btn-primary btn-block w-50 rounded-0 mx-auto">Set Appointment</button>
                         </div>
-                      </div>
+
+                        <script
+                            src="https://www.paypal.com/sdk/js?client-id={{config('app.paypalClientID')}}&currency=PHP">
+                        </script>                        
+
+                        <div class="modal fade" id="payPal" tabindex="-1" role="dialog" aria-labelledby="payPalTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Pay Appointment Fee</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="modal-body">
+                                        In order to set an appointment you have to pay for an appointment fee of &#8369; {{\App\Models\Setting::first()->appointment_fee}}                                        
+                                        <div id="paypal-button-container"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php 
+                            $merchant_id =  config('app.paypalMerchantID');
+                            $petID =  $pet->id;
+                        ?>
+
+                        <script>
+
+                        let appointment_fee = {!! json_encode(\App\Models\Setting::first()->appointment_fee) !!}
+                        let merchant_id = {!! json_encode($merchant_id) !!}
+                        let petID = {!! json_encode($petID) !!}
+                        let date = document.getElementById('dateInput').value;                        
+                                                
+
+                        paypal.Buttons({
+                                createOrder: function(data, actions) {
+                                
+                                
+                                return actions.order.create({
+                                    locale: 'en_US',
+                                    style: {
+                                        size: 'small',
+                                        color: 'white',
+                                        shape: 'rect'                                 
+                                    },
+                                    purchase_units: [{                                                    
+                                        amount: {
+                                            value: appointment_fee,
+                                            currency_code: "PHP", 
+                                            payee : merchant_id     
+                                        }
+                                    }]
+                                    });
+
+                                },
+                                onApprove: function(data, actions) {
+                                    return actions.order.capture().then(function(details) {                                    
+                                        window.location.replace('/setappointment/' + petID + '/' + date + '/' +  getSelectValues(document.getElementById('serviceSelect')).join(""));
+                                    
+                                    });
+                                },
+                                onCancel: function(data){                            
+                                                                                            
+
+                                }
+                        }).render('#paypal-button-container');                                
+                        
+
+                        </script>   
+
+                    </div>                    
 
                 </div>
 
-                {{Form::close()}}
-
             </div>
+        @endif
 
-        </div>
-    @endif
+   @endif
 
     @if ($pet->appointments->count() > 0)
 
@@ -269,26 +344,65 @@
 
 <script>
 
+window.onload = () => {
+    validateDate();
+};
+
 let dateInput = document.getElementById('dateInput');
+let dateStatus = document.getElementById('dateStatus');
+let setAppointmentButton = document.getElementById('setAppointmentButton');
 
 let serviceSelect = document.getElementById('serviceSelect');
 let costDiv = document.getElementById('costDiv');
 let costLabel = document.getElementById('costLabel');
 let totalfee = 0;
 
-function getSelectValues(select) {
-    let result = [];
-    let options = select && select.options;
-    let opt;
 
-    for (let i=0, iLen=options.length; i<iLen; i++) {
-        opt = options[i];
+dateInput.addEventListener('change', () => {
+    validateDate();
+});
 
-        if (opt.selected) {
-        result.push(opt.value || opt.text);
-        }
+function validateDate(){
+
+    let date = dateInput.value;
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', APP_URL + '/validateappointmentdate/' + date, true);
+
+    xhr.onload = function() {
+
+        if (this.status == 200) {                                      
+
+            if(this.responseText == '0' || this.responseText == 0){
+                
+                setAppointmentButton.disabled = false;
+                dateStatus.textContent = 'This date is valid for an appointment';
+                dateStatus.className = 'text-success';
+
+            } else if(this.responseText == '1' || this.responseText == 1) {
+                setAppointmentButton.disabled = true;
+                dateStatus.textContent = 'Sorry, max clients have been reached for this date';
+                dateStatus.className = 'text-danger';
+            } else if(this.responseText == '2' || this.responseText == 2) {
+                setAppointmentButton.disabled = true;
+                dateStatus.textContent = 'Invalid date, must be today or within a month';
+                dateStatus.className = 'text-danger';
+            } else if(this.responseText == '3' || this.responseText == 3) {
+                setAppointmentButton.disabled = true;
+                dateStatus.textContent = 'Invalid date, must be today or within a month';
+                dateStatus.className = 'text-danger';
+            } else {
+                setAppointmentButton.disabled = true;
+                dateStatus.textContent = 'Invalid date';
+                dateStatus.className = 'text-danger';
+            }            
+
+        }              
+
     }
-    return result;
+
+    xhr.send()
 
 }
 

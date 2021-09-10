@@ -2,6 +2,9 @@
 
 return [
 
+    'paypalClientID' => env('PAYPAL_CLIENT_ID', 'no client id'),
+    'paypalMerchantID' => env('PAYPAL_MERCHANT_ID', 'no merchant id'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

@@ -114,7 +114,51 @@ class AppointmentsController extends Controller
         return redirect('/admin')->with('success', 'Appointment with Client: ' . ucfirst($client->user->first_name) .' '. ucfirst($client->user->last_name) . ', of services: [' . $list  . '] for ' . ucfirst($pet->name) . ' has been added');
 
     }    
+    
+    //for client
+    public function clientStore($petID, $date, $services){
 
+        $setting = Setting::first();
+        $pet = Pet::find($petID);
+        $client = Client::find($pet->owner->id);
+
+        $appointment = new Appointment;
+
+        $appointment->pet_id = $petID;
+        $appointment->date = $date;
+        $appointment->status = 0;
+
+        $transaction = new Transaction;
+
+        $transaction->client_id = $client->id;
+        $transaction->type = 'Set Appointment';
+        $transaction->has_payment = 1;
+        
+        $transaction->save();
+
+        $transaction->trans_id = Carbon::now()->isoFormat('YYYY') . '-' . sprintf("%06d", $transaction->id);
+        $transaction->save();
+
+        $payment = new Payment;
+        $payment->amount = $setting->appointment_fee;
+        $payment->transaction_id = $transaction->id;
+        $payment->save();
+
+        $appointment->transaction_id = $transaction->id;        
+        $appointment->save();        
+
+        $idsArray = str_split($services);
+
+        foreach($idsArray as $id){
+            $appointment_service = new AppointmentServices;
+            $appointment_service->appointment_id = $appointment->id;
+            $appointment_service->service_id = $id;
+            $appointment_service->save();            
+        }
+
+        return redirect('/pet/' . $client->user->email. '/' . $pet->name)->with('success', 'Your appointment with ' . $pet->name . ' has been successfully set at ' . Carbon::parse($date)->isoFormat('MMM DD, OY'));
+
+    }
      
     public function done(Request $request){             
 
@@ -234,6 +278,31 @@ class AppointmentsController extends Controller
             return redirect('/admin')->with('info', 'Appointment Schedule updated');
         else
             return redirect('/pet/'. $client->user->email . '/'. $appointment->pet->name)->with('info', 'Appointment Schedule of '. $appointment->pet->name . ' updated');
+
+    }
+
+    public function validateDate($date){
+
+        $the_date = Carbon::parse($date);
+
+        $setting = Setting::first();
+
+        $appointmentCounts = Appointment::where('date', $the_date)->count();
+
+        if($appointmentCounts >= $setting->max_clients)
+            return 1;
+
+        $afterDate = Carbon::yesterday();
+        $beforeDate = Carbon::now()->addMonth();
+
+        if($the_date->lessThanOrEqualTo($afterDate))
+            return 2;
+
+        if($the_date->greaterThanOrEqualTo($beforeDate))
+            return 3;
+        
+
+        return 0;
 
     }
 

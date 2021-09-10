@@ -724,8 +724,7 @@ clientSelect.addEventListener('change', () => {
             for(let i in pets){
                 output+=`<option value="`+ pets[i].id +`">` + capitalizeFirstLetter(pets[i].name) +`</option>`;                        
             }
-            output+=`</select>`;         
-                    
+            output+=`</select>`;                             
             
             petSelect.innerHTML = output;
 

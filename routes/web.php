@@ -35,6 +35,7 @@ Route::any('/registerpetadmin', [App\Http\Controllers\PetsController::class, 'st
 
 Route::any('/reschedappointment', [App\Http\Controllers\AppointmentsController::class, 'updateSchedule'])->name('appointment.reschedule')->middleware(['verified', 'client.updated']);
 Route::get('/transactions/{email?}', [App\Http\Controllers\ClientsController::class, 'viewTransactions'])->name('client.view.transactions')->middleware(['verified', 'client.updated']);
+Route::get('/validateappointmentdate/{date}', [App\Http\Controllers\AppointmentsController::class, 'validateDate'])->name('appointment.date.validate')->middleware(['verified', 'client.updated']);
 
 
 Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->group(function () {
@@ -83,6 +84,7 @@ Route::middleware([App\Http\Middleware\ProtectClientRoutesMiddleware::class])->g
     Route::get('/editpet/{name}', [App\Http\Controllers\PetsController::class, 'edit'])->name('pet.edit');
     Route::any('/updatepet', [App\Http\Controllers\PetsController::class, 'update'])->name('pet.update');    
     Route::get('/gettotalservicefee/{ids}', [App\Http\Controllers\ServicesController::class, 'totalFee'])->name('service.totalFee');    
+    Route::get('/setappointment/{petID}/{date}/{services}', [App\Http\Controllers\AppointmentsController::class, 'clientStore'])->name('appointment.clientstore');    
 
 });
 
