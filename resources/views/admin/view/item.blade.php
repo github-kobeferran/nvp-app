@@ -67,6 +67,13 @@
 
                 <div class="form-inline mb-4">
 
+                    <label for="">Image</label>
+                    {{Form::file('image')}}
+
+                </div>
+
+                <div class="form-inline mb-4">
+
                     <label for="quantity">Quantity</label>
                     {{Form::number('quantity', 1, ['class' => 'form-control ml-2', 'min' => '1', 'max' => '10000'])}}
 
@@ -295,10 +302,7 @@
                              </button> 
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteItem-{{$item->id}}">
                                 Delete
-                             </button> 
-                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#out-{{$item->id}}">
-                                Out of Stock
-                             </button> 
+                             </button>                       
 
                         </td>
 
@@ -431,35 +435,7 @@
                             </div>
                         </div>
                         </div>
-                    </div>
-
-                    <div class="modal fade"  id="out-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">No stocks of <b>{{ucfirst($item->desc)}}</b></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            </div>
-                            <div class="modal-body">
-                            Set {{ucfirst($item->desc)}} to <b>Out of Stock</b>?
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            {!!Form::open(['url' => 'outofstock'])!!}
-
-                                {{Form::hidden('id', $item->id)}}
-
-                                <button type="submit" class="btn btn-primary">Yes</button>
-
-                            {!!Form::close()!!}
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                    
+                    </div>                                    
                 @endforeach
             </tbody>
 

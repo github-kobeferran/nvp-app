@@ -29,5 +29,11 @@ class Transaction extends Model
         return $this->hasOne(Appointment::class);
 
     }
+    
+    public function order(){
+
+        return $this->hasOne(Appointment::class);
+
+    }
 
 }

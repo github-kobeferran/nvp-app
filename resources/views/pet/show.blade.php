@@ -198,12 +198,7 @@ function getSelectValues(select) {
                         paypal.Buttons({
                                 createOrder: function(data, actions) {                                                                
                                 return actions.order.create({
-                                    locale: 'en_US',
-                                    style: {
-                                        size: 'small',
-                                        color: 'white',
-                                        shape: 'rect'                                 
-                                    },
+                                    locale: 'en_US',                                   
                                     purchase_units: [{                                                    
                                         amount: {
                                             value: appointment_fee,

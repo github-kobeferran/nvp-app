@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Item;
+use App\Models\Client;
+use App\Models\Transaction;
 use App\Exports\ItemsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -118,27 +120,21 @@ class ItemsController extends Controller
 
         return redirect('admin/inventory')->with('info', 'Item '. ucfirst($item->desc) . 'has been successfully Updated');    
 
-    }
+    } 
 
-    public function noStock(Request $request){
+    // public function makeOrderClient($clientid, $itemid, $quantity){
 
-        if($request->method() != 'POST')
-            return redirect()->back();
+    //     $client = Client::find($clientid);
+    //     $item = Item::find($itemid);
 
-        $item = Item::find($request->input('id'));
-
-        $item->out_of_stock = 1;
-        $item->quantity = 0;
-
-        $item->save();
         
-        return redirect('/admin/inventory');
 
-    }
+    // }
 
     public function export() 
     {
         return Excel::download(new ItemsExport, 'INVENTORY-'. \Carbon\Carbon::now()->isoFormat('OY-MMM-DD') . '.xlsx');
     }
+
 
 }

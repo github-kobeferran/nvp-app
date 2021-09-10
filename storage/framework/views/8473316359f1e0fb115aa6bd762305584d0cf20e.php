@@ -55,6 +55,14 @@
 
                             <?php endif; ?>
 
+                            <a class="dropdown-item" href="/inventory">
+                                Shop
+                            </a>
+
+                            <a class="dropdown-item" href="/services">
+                                Services
+                            </a>
+
 
                             <a class="dropdown-item" href="<?php echo e(route('logout')); ?>"
                                onclick="event.preventDefault();

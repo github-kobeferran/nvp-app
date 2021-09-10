@@ -52,6 +52,14 @@
 
                             @endif
 
+                            <a class="dropdown-item" href="/inventory">
+                                Shop
+                            </a>
+
+                            <a class="dropdown-item" href="/services">
+                                Services
+                            </a>
+
 
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();

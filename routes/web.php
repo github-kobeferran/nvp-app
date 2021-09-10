@@ -71,8 +71,7 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::any('/employeestore', [App\Http\Controllers\EmployeesController::class, 'store'])->name('employee.store');
     Route::get('/clientsexport', [App\Http\Controllers\ClientsController::class, 'export'])->name('client.export');
     Route::get('/getclientpets/{id}', [App\Http\Controllers\ClientsController::class, 'getRemainingPets'])->name('client.pets');
-    Route::any('/updatesetting', [App\Http\Controllers\SettingsController::class, 'update'])->name('setting.update');
-    
+    Route::any('/updatesetting', [App\Http\Controllers\SettingsController::class, 'update'])->name('setting.update');    
     Route::any('/abadonappointment', [App\Http\Controllers\AppointmentsController::class, 'abandon'])->name('appointment.reschedule');
 
 });
@@ -85,6 +84,7 @@ Route::middleware([App\Http\Middleware\ProtectClientRoutesMiddleware::class])->g
     Route::any('/updatepet', [App\Http\Controllers\PetsController::class, 'update'])->name('pet.update');    
     Route::get('/gettotalservicefee/{ids}', [App\Http\Controllers\ServicesController::class, 'totalFee'])->name('service.totalFee');    
     Route::get('/setappointment/{petID}/{date}/{services}', [App\Http\Controllers\AppointmentsController::class, 'clientStore'])->name('appointment.clientstore');    
+    Route::get('/makeorderclient/{clientid}/{itemid}/{quantity}', [App\Http\Controllers\OrdersController::class, 'clientStore'])->name('order.clientStore');    
 
 });
 
