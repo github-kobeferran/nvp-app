@@ -36,7 +36,7 @@
                <div class="form-group">
 
                     <label class="float-left mr-2" for="desc">Item Description</label>
-                    {{Form::text('desc', '', ['class' => 'form-control ml-2 w-50 ', 'required' => 'required'])}}
+                    {{Form::text('desc', '', ['placeholder' => 'Item Description here', 'class' => 'form-control ml-2 w-50 ', 'required' => 'required'])}}
                   
 
                </div>
@@ -48,7 +48,7 @@
                     <?php                     
                         $categories = \App\Models\ItemCategory::orderBy('desc', 'asc')->pluck('desc', 'id');                    
                     ?>
-                    {{Form::select('category_id', $categories , null, ['data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;'])}}
+                    {{Form::select('category_id', $categories , null, ['data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;', 'required' => 'required'])}}
 
                 </div>   
 
@@ -103,111 +103,119 @@
     </div>
 
     <hr>
+    <hr class="bg-primary">
 
-    <div class="container ml-4 border border-primary p-4">        
+    <div class="container ml-4 ">        
 
-        <div class="row m-4 border p-2 mr-4">
+        <div class="row ">
 
-            <div class="col">
+            <div class="col-8">
 
                 @empty(\App\Models\ItemCategory::all())
 
                 @else
 
-                <table id="categoryTable" class="table table-striped table-bordered" style="max-height: 200px ">
+                <div class="table-responsive">
 
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th style="width: 20px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (\App\Models\ItemCategory::all() as $category)
+                    
+                    <table id="categoryTable" class="table table-striped table-bordered" style="max-height: 200px ">
+
+                        <thead>
                             <tr>
-                                <td>{{strtoupper($category->desc)}}</td>
-                                <td colspan="2" >
-
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCat-{{$category->id}}">
-                                        Edit
-                                        </button> 
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCat-{{$category->id}}">
-                                        Delete
-                                        </button> 
-
-                                </td>
+                                <th>Description</th>
+                                <th style="width: 20px;">Action</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (\App\Models\ItemCategory::all() as $category)
+                                <tr>
+                                    <td>{{strtoupper($category->desc)}}</td>
+                                    <td colspan="2" >
 
-                            <div class="modal fade"  id="editCat-{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($category->desc)}}</b></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    </div>
-                                    {!!Form::open(['url' => '/updatecat'])!!}
-                                    <div class="modal-body">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCat-{{$category->id}}">
+                                            Edit
+                                            </button> 
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCat-{{$category->id}}">
+                                            Delete
+                                            </button> 
 
-                                        {{Form::hidden('id', $category->id)}}
-                                        <div class="form-group">
-                                            <label for="">Category Description</label>
-                                            {{Form::text('desc', $category->desc, ['class' => 'form-control', 'required' => 'required'])}}
+                                    </td>
+                                </tr>
+
+                                <div class="modal fade"  id="editCat-{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($category->desc)}}</b></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                         </div>
+                                        {!!Form::open(['url' => '/updatecat'])!!}
+                                        <div class="modal-body">
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                                                
-                                        <button type="submit" class="btn btn-primary">Save</button>        
-                                    </div>
-                                    {!!Form::close()!!}
-                                </div>
-                                </div>
-                            </div>
+                                            {{Form::hidden('id', $category->id)}}
+                                            <div class="form-group">
+                                                <label for="">Category Description</label>
+                                                {{Form::text('desc', $category->desc, ['class' => 'form-control', 'required' => 'required'])}}
+                                            </div>
 
-                            <div class="modal fade"  id="deleteCat-{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($category->desc)}}</b></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                                                
+                                            <button type="submit" class="btn btn-primary">Save</button>        
+                                        </div>
+                                        {!!Form::close()!!}
                                     </div>
-                                    <div class="modal-body">
-                                    You sure you want to delete category: <b>{{ucfirst($category->desc)}}</b>?
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    {!!Form::open(['url' => '/deletecat'])!!}
-        
-                                        {{Form::hidden('id', $category->id)}}
-        
-                                        <button type="submit" class="btn btn-primary">Yes</button>
-        
-                                    {!!Form::close()!!}
                                     </div>
                                 </div>
-                                </div>
-                            </div>
 
-                        @endforeach
-                    </tbody>
-                
-                </table>
+                                <div class="modal fade"  id="deleteCat-{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($category->desc)}}</b></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        <div class="modal-body">
+                                        You sure you want to delete category: <b>{{ucfirst($category->desc)}}</b>?
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        {!!Form::open(['url' => '/deletecat'])!!}
+            
+                                            {{Form::hidden('id', $category->id)}}
+            
+                                            <button type="submit" class="btn btn-primary">Yes</button>
+            
+                                        {!!Form::close()!!}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+
+                            @endforeach
+                        </tbody>
+                    
+                    </table>
+
+                </div>
                     
                 @endempty
                 
             </div>
-            <div class="col mx-auto text-right border-left">
+
+            
+            <div class="col-4 text-right">
                 
                 <br>
                 <h3 class="">Add an <u>Item Category</u></h3>
                 <br>
             {!!Form::open(['url' => '/addcat'])!!}
             
-               <div class="form-inline mb-4">
+               <div class="form-inline mr-0 mb-4">
 
                     <label for="desc">Category Description</label>
                     {{Form::text('desc', '', ['class' => 'form-control ml-2'])}}                  
@@ -225,11 +233,12 @@
 
     </div>
 
+    <hr class="bg-primary">
+
     @empty(\App\Models\Item::first())
 
     @else
-
-        <hr class="bg-secondary w-75" >
+        
 
         <div>
             <h1 class="text-center">Items Table</h1>

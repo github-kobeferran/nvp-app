@@ -136,7 +136,7 @@ function getSelectValues(select) {
 
                     <div class="form-group">
                 
-                        <label for="type">Service</label>
+                        <label for="type"><a href="/services" class="text-dark">Service</a></label>
                         
                         <?php                     
                     
@@ -319,10 +319,10 @@ function getSelectValues(select) {
                                         
                                         @break
                                     @case(1)
-                                        
+                                        <span class="text-success">Done</span>
                                         @break
                                     @case(2)
-                                        
+                                    <span class="text-muted">Abandoned</span>
                                         @break
                                     @default
                                         
@@ -389,6 +389,10 @@ function validateDate(){
             } else if(this.responseText == '3' || this.responseText == 3) {
                 setAppointmentButton.disabled = true;
                 dateStatus.textContent = 'Invalid date, must be today or within a month';
+                dateStatus.className = 'text-danger';            
+            } else if(this.responseText == '4' || this.responseText == 4) {
+                setAppointmentButton.disabled = true;
+                dateStatus.textContent = 'Sorry, Clinic are not accepting appointments right now';
                 dateStatus.className = 'text-danger';
             } else {
                 setAppointmentButton.disabled = true;

@@ -299,7 +299,10 @@ class AppointmentsController extends Controller
             return 2;
 
         if($the_date->greaterThanOrEqualTo($beforeDate))
-            return 3;
+            return 3;       
+
+        if($setting->stop_appointments)
+            return 4;       
         
 
         return 0;

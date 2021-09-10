@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Item;
@@ -27,10 +28,18 @@ class ItemsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'desc' => 'required|regex:/[A-Za-z0-9]+/|max:100',         
+            'category_id' => 'required',
             'quantity' => 'required|min:1|max:10000',
             'deal_price' => 'required|gte:5|lte:100000',
             'reg_price' => 'required|gte:5|lte:100000',
             'note' => 'max:255',
+        ],[
+            'desc.regex' => 'Item Description is invalid',
+            'category_id.required' => 'Item Category is required',
+            'deal_price.gte' => 'Dealers Price must be greater than or equal to 5',
+            'deal_price.lte' => 'Dealers Price must be less than or equal to 100000',
+            'reg_price.gte' => 'Regular Price must be greater than or equal to 5',
+            'reg_price.lte' => 'Regular Price must be less than or equal to 100000',
         ]);    
 
         if ($validator->fails())

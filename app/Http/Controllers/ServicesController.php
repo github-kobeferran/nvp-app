@@ -39,7 +39,7 @@ class ServicesController extends Controller
 
     }
 
-    public function update(Request $request){        
+    public function update(Request $request){                  
 
         if($request->method() != 'POST')
             return redirect()->back(); 
@@ -52,10 +52,16 @@ class ServicesController extends Controller
             'price' => 'required|gte:50|lte:50000',                     
         ]);    
 
-        $service = Service::find($request->input('id'));        
+        $service = Service::find($request->input('id'));   
+        
 
         $service->desc = $request->input('desc');     
         $service->price = $request->input('price');     
+
+        if($request->has('status'))
+            $service->status = 1;
+        else 
+            $service->status = 0;
         
         $service->save();
 

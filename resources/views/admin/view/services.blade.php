@@ -64,6 +64,7 @@
     
                         <th>Description</th>
                         <th>Fee</th>
+                        <th>Status</th>
                         <th style="width: 20px;">Action</th>
     
                     </tr>
@@ -77,7 +78,15 @@
                         <tr>
                             <td>{{$service->desc}}</td>
                             <td>&#8369; {{$service->price}}</td>
-                            <td colspan="2" >
+                            <td>
+                                @if ($service->status == 1)
+                                    Unavailable
+                                @else
+                                    Available
+                                @endif
+    
+                            </td>
+                            <td >
 
                                 <button type="button" class="btn btn-primary mb-1" data-toggle="modal" data-target="#editService-{{$service->id}}">
                                     Edit
@@ -86,69 +95,74 @@
                                     Delete
                                 </button> 
 
+                                <div class="modal fade"  id="editService-{{$service->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($service->desc)}}</b></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        {!!Form::open(['url' => '/updateservice'])!!}
+                                        <div class="modal-body">
+        
+                                            {{Form::hidden('id', $service->id)}}
+                                            <div class="form-group">
+                                                <label for="">Service Description</label>
+                                                {{Form::text('desc', $service->desc, ['class' => 'form-control', 'required' => 'required'])}}
+                                            </div>
+                                            
+                                            <label for="">Fee</label>
+                                            <div class="form-inline">
+                                                &#8369;{{Form::number('price', $service->price, ['class' => 'form-control ml-2', 'min' => '50', 'max' => '50000'])}}
+                                            </div>                                    
+                                                   
+                                            <div class="form-check my-3 mr-3">
+                                                <input name="status" type="checkbox" class="form-check-input" id="exampleCheck1" {{ $service->status == 1? 'checked' : ''}}>
+                                                <label class="form-check-label" for="exampleCheck1" >Mark this service as unvailable</label>
+                                              </div>
+        
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                                                
+                                            <button type="submit" class="btn btn-primary">Save</button>        
+                                        </div>
+                                        {!!Form::close()!!}
+                                    </div>
+                                    </div>
+                                </div>
+        
+                                <div class="modal fade"  id="deleteService-{{$service->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($service->desc)}}</b></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        <div class="modal-body">
+                                        You sure you want to delete service: <b>{{ucfirst($service->desc)}}</b>?
+                                        </div>
+                                        {!!Form::open(['url' => '/deleteservice'])!!}
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            
+                                            {{Form::hidden('id', $service->id)}}
+            
+                                            <button type="submit" class="btn btn-primary">Yes</button>
+            
+                                        {!!Form::close()!!}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+
                             </td>
                         </tr>
 
-                        <div class="modal fade"  id="editService-{{$service->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($service->desc)}}</b></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                {!!Form::open(['url' => '/updateservice'])!!}
-                                <div class="modal-body">
-
-                                    {{Form::hidden('id', $service->id)}}
-                                    <div class="form-group">
-                                        <label for="">Service Description</label>
-                                        {{Form::text('desc', $service->desc, ['class' => 'form-control', 'required' => 'required'])}}
-                                    </div>
-                                    
-                                    <label for="">Fee</label>
-                                    <div class="form-inline">
-
-                                        &#8369;{{Form::number('price', $service->price, ['class' => 'form-control ml-2', 'min' => '50', 'max' => '50000'])}}
-
-                                    </div>                                    
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                                                
-                                    <button type="submit" class="btn btn-primary">Save</button>        
-                                </div>
-                                {!!Form::close()!!}
-                            </div>
-                            </div>
-                        </div>
-
-                        <div class="modal fade"  id="deleteService-{{$service->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($service->desc)}}</b></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                You sure you want to delete service: <b>{{ucfirst($service->desc)}}</b>?
-                                </div>
-                                {!!Form::open(['url' => '/deleteservice'])!!}
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    
-                                    {{Form::hidden('id', $service->id)}}
-    
-                                    <button type="submit" class="btn btn-primary">Yes</button>
-    
-                                {!!Form::close()!!}
-                                </div>
-                            </div>
-                            </div>
-                        </div>
+                        
                         
                     @endforeach
     

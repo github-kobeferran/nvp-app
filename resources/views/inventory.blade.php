@@ -4,43 +4,84 @@
 
 @section('content')
 
-    @empty(\App\Models\Item::all())
-        
-    @else
+    <div class="container ">
 
-        <div class="container text-center">
+        <div class="row">
 
-            <h1>Our Products</h1> 
+            <div class="col text-center">
 
-            <hr>
-            
-            <table id="products" class="table table-bordered">
-                <thead class="bg-info">
-                    <tr>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>For</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (\App\Models\Item::orderBy('desc', 'asc')->get() as $item)
-                    <tr>
-                        <td>{{ucfirst($item->desc)}}</td>
-                        <td>{{strtoupper($item->category->desc)}}</td>
-                        <td>{{is_null($item->pet_type_id) ? 'For All Pet Types' : ucfirst($item->type->type)}}</td>
-                        <td>&#8369; {{$item->reg_price}}</td>
-                        <td>{{$item->pet_type_id ? 'Available' : 'Out of Stock'}}</td>
-                    </tr>
-                    @endforeach
-                    
-                </tbody>                
-            </table>
+                <h1>Our Products</h1> 
+
+            </div>
 
         </div>
+        
+        <hr>
 
-    @endempty
+        @if (!is_null(\App\Models\Item::first()))
+        
+            <div class="row">
+
+                <div class="d-flex justify-content-center container mt-5">
+                    
+                    @foreach (\App\Models\Item::orderBy('quantity', 'desc')->get() as $item)
+
+                        <div class="card p-3 bg-white mx-auto border border-secondary"><i class="fa fa-circle {{$item->quantity > 0 ? 'text-success' : 'text-dark'}} "></i>
+                            <div class="about-product text-center mt-2">
+                                @if (is_null($item->image))
+                                    <img src="{{url('storage/images/item/no-image-item.jpg')}}" width="100" height="100">                                    
+                                @else
+                                    
+                                @endif
+                                <div class="border-bottom">
+                                    <span>{{$item->desc}}</span>
+                                    <br>
+                                    <span class="text-muted"  style="font-size: .8em;">{{$item->category->desc}}</span>
+                                    
+                                </div>
+                            </div>
+                            <div class="stats mt-2 border-bottom">
+                                <div class="d-flex justify-content-end p-price"><span>&#8369; {{$item->reg_price}}</span></div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <button onclick="decreaseQuantity(document.getElementById('quantity-{{$item->id}}'))" class="btn btn-outline-info" type="button">-</button>
+                                </div>
+                                <input id="quantity-{{$item->id}}" type="number" min="1" max="{{$item->quantity}}" class="form-control w-25 text-center" value="1">
+                                <div class="input-group-append">
+                                    <button onclick="increaseQuantity(document.getElementById('quantity-{{$item->id}}'), {{$item->quantity}})" class="btn btn-outline-info" type="button">+</button>
+                                </div>
+                            </div>
+                            <div class="text-center">                                
+                                <span class="text-muted" style="font-size: .8em !important;">{{$item->quantity}} items left</span>
+                            </div>
+
+                            <button class="btn btn-block btn-primary rounded-0">Buy now</button>
+                        </div>
+                        
+                    @endforeach
+
+                </div>               
+
+            </div>
+
+        @else 
+
+            <div class="row">
+
+                <div class="col text-center">
+
+                    Sorry, no available products right now.
+
+                </div>
+
+            </div>
+
+        @endif
+        
+        
+
+    </div>
 
 
 <script>
@@ -48,6 +89,16 @@
 $(document).ready( function () {
     $('#products').DataTable();
 } );
+
+function increaseQuantity(quantityInput, max) {
+    if(quantityInput.value < max)
+        quantityInput.value++;
+}
+
+function decreaseQuantity(quantityInput) {
+    if(quantityInput.value > 1)
+        quantityInput.value--;
+}
 
 </script>
 @endsection
