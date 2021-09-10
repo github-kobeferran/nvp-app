@@ -17,7 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->string('trans_id', 11)->nullable();
             $table->integer('client_id');
-            $table->string('type', 25);
+            $table->string('type');
             $table->boolean('has_payment')->default(0);
             $table->integer('approved_by')->nullable();
             $table->timestamps();
