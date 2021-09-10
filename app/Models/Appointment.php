@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Client;
 use App\Models\Service;
 use App\Models\Pet;
+use App\Models\Transaction;
 
 class Appointment extends Model
 {
@@ -31,6 +32,12 @@ class Appointment extends Model
         }            
 
         return $services;
+
+    }
+
+    public function transaction(){
+
+        return $this->belongsTo(Transaction::class);
 
     }
 

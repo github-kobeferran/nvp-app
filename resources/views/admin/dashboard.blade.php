@@ -575,6 +575,7 @@
                                     <tr>
                                         <th>Date</th>
                                         <th>Service</th>
+                                        <th>Set by</th>
                                         <th>Client</th>
                                         <th>Pet</th>
                                         <th>Status</th>
@@ -600,6 +601,19 @@
                                                 
                                             </td>    
     
+                                            <td>
+                                                @if (is_null($appointment->transaction->approved_by))
+                                                    <span class="text-muted">Client</span>
+                                                @else
+                                                    @if (is_null(\App\Models\User::find($appointment->transaction->approved_by)->employee))
+                                                        <span class="text-muted">Site Administrator</span>
+                                                    @else
+                                                        <span class="text-muted">Admin {{\App\Models\User::find($appointment->transaction->approved_by)->first_name . ' ' . \App\Models\User::find($appointment->transaction->approved_by)->last_name}}</span>
+                                                    @endif
+                                                @endif
+
+                                            </td>
+
                                             <td><a href="{{url('/user/'.$appointment->pet->owner->user->email )}}">{{$appointment->pet->owner->user->first_name . ' ' . substr($appointment->pet->owner->user->first_name, 0, 1) . '. ' . $appointment->pet->owner->user->last_name}}</a></td>
                                             <td><a href="{{url('/pet/' . $appointment->pet->owner->user->email . '/' . $appointment->pet->name )}}" class="text-danger">{{ucfirst($appointment->pet->name)}}</a></td>
                                             

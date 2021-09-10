@@ -196,9 +196,7 @@ function getSelectValues(select) {
                                                 
 
                         paypal.Buttons({
-                                createOrder: function(data, actions) {
-                                
-                                
+                                createOrder: function(data, actions) {                                                                
                                 return actions.order.create({
                                     locale: 'en_US',
                                     style: {
@@ -213,7 +211,7 @@ function getSelectValues(select) {
                                             payee : merchant_id     
                                         }
                                     }]
-                                    });
+                                });
 
                                 },
                                 onApprove: function(data, actions) {

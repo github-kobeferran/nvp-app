@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Client;
 use App\Models\Payment;
+use App\Models\Appointment;
 
 class Transaction extends Model
 {
@@ -20,6 +21,12 @@ class Transaction extends Model
     public function payment(){
 
         return $this->hasOne(Payment::class);
+
+    }
+
+    public function appointment(){
+
+        return $this->hasOne(Appointment::class);
 
     }
 

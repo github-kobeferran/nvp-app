@@ -150,7 +150,10 @@
         <br>
 
         @if (auth()->user()->isAdmin())
-            <a href="{{url('createpet/' . $user->email)}}" class="btn-lg btn-primary float-right"><i class="fa fa-paw text-danger" aria-hidden="true"></i>  Add Pet to this Client</a>
+            <div>
+                <a href="{{url('transactions/' . $user->email)}}" class="btn-lg btn-success float-left">  See {{$user->first_name}}'s transactions <i class="fa fa-list-alt" aria-hidden="true"></i></a>
+                <a href="{{url('createpet/' . $user->email)}}" class="btn-lg btn-primary float-right"><i class="fa fa-paw text-danger" aria-hidden="true"></i>  Add Pet to this Client</a>
+            </div>
             <br>
             <br>
         @endif   
