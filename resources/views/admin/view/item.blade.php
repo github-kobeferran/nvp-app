@@ -252,207 +252,211 @@
             <span class="float-right"><a href="/itemexport" class="btn btn-success text-dark shadow"><b>Export Items to Excel</b></a></span>
         </div>
 
-        <table id="itemsTable" class="table table-striped table-bordered" style="">
+        <div class="table-responsive">
 
-            <thead class="bg-info">
+            <table id="itemsTable" class="table table-striped table-bordered" style="">
 
-                <tr>
-
-                    <th>Date Added</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Pet Type</th>
-                    <th>Dealers Price</th>
-                    <th>Regular Price</th>
-                    <th>Quantity</th>
-                    <th style="width: 30px;">Action</th>
-
-                </tr>
-                
-            </thead>
-
-            <tbody>
-
-                @foreach (\App\Models\Item::all() as $item)
-
+                <thead class="bg-info">
+    
                     <tr>
-
-                        <td>{{\Carbon\Carbon::parse($item->created_at)->isoFormat('D, MMM OY-h:mm a')}}</td>
-                        <td>{{$item->desc}}</td>
-                        <td>{{$item->category->desc}}</td>
-
-                        @empty($item->pet_type_id)
-                            
-                            <td>For All Pet Types</td>      
-
-                        @else
-
-                            <td>{{ucfirst($item->type->type)}}</td>  
-
-                        @endisset
-
-                        <td>&#8369; {{$item->deal_price}}</td>
-                        <td>&#8369; {{$item->reg_price}}</td>
-                        <td>{{$item->quantity}}</td>
-
-                        <td colspan="3" >
-
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editItem-{{$item->id}}">
-                                Edit
-                             </button> 
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteItem-{{$item->id}}">
-                                Delete
-                             </button>                       
-
-                        </td>
-
+    
+                        <th>Date Added</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Pet Type</th>
+                        <th>Dealers Price</th>
+                        <th>Regular Price</th>
+                        <th>Quantity</th>
+                        <th style="width: 30px;">Action</th>
+    
                     </tr>
-
-                    <div class="modal fade" id="editItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">                    
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content"  style="max-width: 80% !important;" >
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($item->desc)}}</b></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    
+                </thead>
+    
+                <tbody>
+    
+                    @foreach (\App\Models\Item::all() as $item)
+    
+                        <tr>
+    
+                            <td>{{\Carbon\Carbon::parse($item->created_at)->isoFormat('D, MMM OY-h:mm a')}}</td>
+                            <td>{{$item->desc}}</td>
+                            <td>{{$item->category->desc}}</td>
+    
+                            @empty($item->pet_type_id)
+                                
+                                <td>For All Pet Types</td>      
+    
+                            @else
+    
+                                <td>{{ucfirst($item->type->type)}}</td>  
+    
+                            @endisset
+    
+                            <td>&#8369; {{$item->deal_price}}</td>
+                            <td>&#8369; {{$item->reg_price}}</td>
+                            <td>{{$item->quantity}}</td>
+    
+                            <td colspan="3" >
+    
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editItem-{{$item->id}}">
+                                    Edit
+                                 </button> 
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteItem-{{$item->id}}">
+                                    Delete
+                                 </button>                       
+    
+                            </td>
+    
+                        </tr>
+    
+                        <div class="modal fade" id="editItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">                    
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content"  style="max-width: 80% !important;" >
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($item->desc)}}</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                {!!Form::open(['url' => 'updateitem', 'files' => true])!!}
+                                <div class="modal-body">
+    
+                                    {{Form::hidden('id', $item->id)}}
+                                    <div class="form-group">
+                                        
+                                        <label class="float-left mr-2" for="desc">Item Description</label>
+                                        {{Form::text('desc', $item->desc, ['class' => 'form-control ml-2  ', 'required' => 'required'])}}
+    
+                                    </div>
+                                    <div class="form-group">
+                                        
+                                        <label class="" for="desc">Item Category</label>
+                                        <?php                     
+                                            $categories = \App\Models\ItemCategory::orderBy('desc', 'asc')->pluck('desc', 'id');                    
+                                        ?>
+                                        {{Form::select('asdf', $categories , $item->item_category_id, ['id' => 'cat_select', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;'])}}
+                                        {{Form::hidden('category_id', $item->item_category_id, ['id' => 'hidden-cat'])}}
+    
+                                        <script>
+                                            let cat_select = document.getElementById('cat_select');
+                                            let hidden_cat_id = document.getElementById('hidden-cat');
+    
+                                            cat_select.addEventListener('change', () => {
+                                                hidden_cat_id.value = cat_select.value;
+                                                console.log(cat_select.value);
+                                            });
+    
+                                        </script>
+    
+                                    </div>
+    
+                                     <div class="form-group">
+    
+                                        <label for="pet_type">Pet Type</label>
+                                        <?php                     
+                                            $types = \App\Models\PetType::orderBy('type', 'asc')->pluck('type', 'id');                    
+                                        ?>
+                                        {{Form::select('qwe', $types , $item->pet_type_id, [$item->pet_type_id ? '' : 'disabled' => 'disabled', 'id' => 'typeSelect-edit', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;',  ' title' => 'Choose a Pet Type'])}}
+                                        {{Form::hidden('all_types', 0)}}
+                                        <input name="all_types" value="1" type="checkbox" style="width: 25px; height:25px;" class="form-check-input mx-2 bg-secondary" id="alltypescheck-edit" {{$item->pet_type_id ? '' : 'checked'}}>                    
+                                        <label class="form-check-label" style="font-size: 1rem;">For All Pet Types</label>
+                                        {{Form::hidden('type_id', $item->pet_type_id, ['id' => 'hidden-type'])}}
+    
+                                        <script>
+                                            let type_select = document.getElementById('typeSelect-edit');
+                                            let hidden_type_id = document.getElementById('hidden-type');
+    
+                                            type_select.addEventListener('change', () => {
+                                                hidden_type_id.value = type_select.value;
+                                                
+                                            });
+    
+                                        </script>
+    
+                                    </div>
+    
+                                    <div class="form-group">
+    
+                                        @if (!is_null($item->image))
+                                            <img src="{{url('storage/images/item/' . $item->image)}}" width="200" alt="">                                        
+                                        @else
+                                            <img src="{{url('storage/images/item/no-image-item.jpg')}}" width="200" alt="">                                        
+                                        @endif
+                                        
+                                        <label for="">Image</label>
+                                        {{Form::file('image', ['class' => 'form-control'])}}
+    
+                                    </div>
+    
+                                    <div class="form-group">
+    
+                                        <label for="quantity">Quantity</label>
+                                        {{Form::number('quantity', $item->quantity, ['class' => 'form-control ml-2', 'min' => '0', 'max' => '10000'])}}
+    
+                                    </div>
+    
+                                    <div class="form-group">
+    
+                                        <label for="quantity">Dealers Price</label>
+                                        <span class="ml-3">&#8369;</span>{{Form::number('deal_price', $item->deal_price, ['class' => 'form-control ml-1', 'min' => '5', 'max' => '100000', 'step' => '0.01'])}}
+    
+                                    </div>
+    
+                                    <div class="form-group">
+    
+                                        <label for="quantity">Regular Price</label>
+                                        <span class="ml-3">&#8369;</span>{{Form::number('reg_price', $item->reg_price, ['class' => 'form-control ml-1', 'min' => '5', 'max' => '100000', 'step' => '0.01'])}}
+    
+                                    </div>
+    
+                                    <label for="">Note</label>                    
+                                    <div class="form-inline mb-4">
+                                        {{Form::textarea('note', $item->note, ['class' => 'form-control ml-2', 'placeholder' => 'say note about the item here.. (optional)'])}}
+    
+                                    </div>
+                                
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>                            
+                                </div>
+                                {!!Form::close()!!}
                             </div>
-                            {!!Form::open(['url' => 'updateitem', 'files' => true])!!}
-                            <div class="modal-body">
-
-                                {{Form::hidden('id', $item->id)}}
-                                <div class="form-group">
-                                    
-                                    <label class="float-left mr-2" for="desc">Item Description</label>
-                                    {{Form::text('desc', $item->desc, ['class' => 'form-control ml-2  ', 'required' => 'required'])}}
-
-                                </div>
-                                <div class="form-group">
-                                    
-                                    <label class="" for="desc">Item Category</label>
-                                    <?php                     
-                                        $categories = \App\Models\ItemCategory::orderBy('desc', 'asc')->pluck('desc', 'id');                    
-                                    ?>
-                                    {{Form::select('asdf', $categories , $item->item_category_id, ['id' => 'cat_select', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;'])}}
-                                    {{Form::hidden('category_id', $item->item_category_id, ['id' => 'hidden-cat'])}}
-
-                                    <script>
-                                        let cat_select = document.getElementById('cat_select');
-                                        let hidden_cat_id = document.getElementById('hidden-cat');
-
-                                        cat_select.addEventListener('change', () => {
-                                            hidden_cat_id.value = cat_select.value;
-                                            console.log(cat_select.value);
-                                        });
-
-                                    </script>
-
-                                </div>
-
-                                 <div class="form-group">
-
-                                    <label for="pet_type">Pet Type</label>
-                                    <?php                     
-                                        $types = \App\Models\PetType::orderBy('type', 'asc')->pluck('type', 'id');                    
-                                    ?>
-                                    {{Form::select('qwe', $types , $item->pet_type_id, [$item->pet_type_id ? '' : 'disabled' => 'disabled', 'id' => 'typeSelect-edit', 'data-live-search' => 'true', 'class' => 'selectpicker ml-2 border', 'style' => 'font-size: 1.2rem;',  ' title' => 'Choose a Pet Type'])}}
-                                    {{Form::hidden('all_types', 0)}}
-                                    <input name="all_types" value="1" type="checkbox" style="width: 25px; height:25px;" class="form-check-input mx-2 bg-secondary" id="alltypescheck-edit" {{$item->pet_type_id ? '' : 'checked'}}>                    
-                                    <label class="form-check-label" style="font-size: 1rem;">For All Pet Types</label>
-                                    {{Form::hidden('type_id', $item->pet_type_id, ['id' => 'hidden-type'])}}
-
-                                    <script>
-                                        let type_select = document.getElementById('typeSelect-edit');
-                                        let hidden_type_id = document.getElementById('hidden-type');
-
-                                        type_select.addEventListener('change', () => {
-                                            hidden_type_id.value = type_select.value;
-                                            
-                                        });
-
-                                    </script>
-
-                                </div>
-
-                                <div class="form-group">
-
-                                    @if (!is_null($item->image))
-                                        <img src="{{url('storage/images/item/' . $item->image)}}" width="200" alt="">                                        
-                                    @else
-                                        <img src="{{url('storage/images/item/no-image-item.jpg')}}" width="200" alt="">                                        
-                                    @endif
-                                    
-                                    <label for="">Image</label>
-                                    {{Form::file('image', ['class' => 'form-control'])}}
-
-                                </div>
-
-                                <div class="form-group">
-
-                                    <label for="quantity">Quantity</label>
-                                    {{Form::number('quantity', $item->quantity, ['class' => 'form-control ml-2', 'min' => '0', 'max' => '10000'])}}
-
-                                </div>
-
-                                <div class="form-group">
-
-                                    <label for="quantity">Dealers Price</label>
-                                    <span class="ml-3">&#8369;</span>{{Form::number('deal_price', $item->deal_price, ['class' => 'form-control ml-1', 'min' => '5', 'max' => '100000', 'step' => '0.01'])}}
-
-                                </div>
-
-                                <div class="form-group">
-
-                                    <label for="quantity">Regular Price</label>
-                                    <span class="ml-3">&#8369;</span>{{Form::number('reg_price', $item->reg_price, ['class' => 'form-control ml-1', 'min' => '5', 'max' => '100000', 'step' => '0.01'])}}
-
-                                </div>
-
-                                <label for="">Note</label>                    
-                                <div class="form-inline mb-4">
-                                    {{Form::textarea('note', $item->note, ['class' => 'form-control ml-2', 'placeholder' => 'say note about the item here.. (optional)'])}}
-
-                                </div>
-                            
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Save</button>                            
-                            </div>
-                            {!!Form::close()!!}
                         </div>
-                        </div>
-                    </div>
-
-                    <div class="modal fade"  id="deleteItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($item->desc)}}</b></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+    
+                        <div class="modal fade"  id="deleteItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($item->desc)}}</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                You sure you want to delete {{ucfirst($item->desc)}}?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                {!!Form::open(['url' => 'deleteitem'])!!}
+    
+                                    {{Form::hidden('id', $item->id)}}
+    
+                                    <button type="submit" class="btn btn-primary">Yes</button>
+    
+                                {!!Form::close()!!}
+                                </div>
                             </div>
-                            <div class="modal-body">
-                            You sure you want to delete {{ucfirst($item->desc)}}?
                             </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            {!!Form::open(['url' => 'deleteitem'])!!}
+                        </div>                                    
+                    @endforeach
+                </tbody>
+    
+            </table>
 
-                                {{Form::hidden('id', $item->id)}}
-
-                                <button type="submit" class="btn btn-primary">Yes</button>
-
-                            {!!Form::close()!!}
-                            </div>
-                        </div>
-                        </div>
-                    </div>                                    
-                @endforeach
-            </tbody>
-
-        </table>
+        </div>
         
     @endempty
          

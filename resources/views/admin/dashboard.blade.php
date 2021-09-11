@@ -2,7 +2,7 @@
 
 @section('content')
 
-@if (!is_null(\App\Models\Appointment::where('date', '<', \Carbon\Carbon::now())->where('status', 0)->first()))
+@if (!is_null(\App\Models\Appointment::where('date', '<=', \Carbon\Carbon::yesterday())->where('status', 0)->first()))
 
     <?php 
         $abandonedAppointments = \App\Models\Appointment::where('date', '<', \Carbon\Carbon::now())->where('status', 0)->get();
@@ -17,10 +17,14 @@
     
 @endif
 
-
-
 @if (is_null(\App\Models\Setting::first()))    
     <?php \App\Models\Setting::create([]); ?>
+@endif
+
+@if (\Carbon\Carbon::now()->toDateString() > \App\Models\Setting::first()->last_follow_up)
+    
+<?php \App\Http\Controllers\AppointmentsController::sendFollowUps(); ?>
+
 @endif
 
 @include('inc.sidebar')
@@ -168,6 +172,10 @@
                             </div>                                
                                 
     
+                        </div>              
+
+                        <div class="form-inline mx-auto my-2 text-center">
+                             {{Form::number('weeks', \App\Models\Setting::first()->weeks, ['class' => 'form-control mx-1 text-center', 'min' => '1', 'max' => '8'])}} No. of weeks to send follow-up email after appointment
                         </div>
 
                     </div>                    

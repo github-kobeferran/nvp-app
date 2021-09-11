@@ -19,6 +19,7 @@ class CreateSettingsTable extends Migration
             $table->integer('stop_appointments')->default(0);            
             $table->integer('stop_orders')->default(0);            
             $table->integer('appointment_fee')->default(50);            
+            $table->integer('weeks')->default(3);            
         });
     }
 

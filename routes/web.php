@@ -21,7 +21,7 @@ Auth::routes(['verify' => true]);
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/inventory/{orderBy?}/{sortBy?}', [App\Http\Controllers\HomeController::class, 'showInventory'])->name('home.inventory')->where(['orderBy' => 'quantity|description|reg_price|created_at', 'sortBy' => 'asc|desc']);
+Route::get('/inventory/{orderBy?}/{sortBy?}', [App\Http\Controllers\HomeController::class, 'showInventory'])->name('home.inventory')->where(['orderBy' => 'quantity|desc|reg_price|created_at', 'sortBy' => 'asc|desc']);
 Route::get('/services', [App\Http\Controllers\HomeController::class, 'showServices'])->name('home.services');
 
 Route::get('/user', [App\Http\Controllers\UsersController::class, 'viewClient'])->name('user.client')->middleware(['verified']);

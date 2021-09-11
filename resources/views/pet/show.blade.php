@@ -96,9 +96,17 @@ function getSelectValues(select) {
             @endif
 
             <tr>
-
-                <td> {{$pet->checked ? 'Have visited the Clinic' : 'Have not visited the Clinic'}}  </td>
-
+                <td>
+                    @if ($pet->checked)
+                        Have visited the Clinic                        
+                        @if (!is_null($pet->last_appointment_at))
+                            <span class="text-muted" style="font-size: .8em !important;"> last appointment at {{\Carbon\Carbon::parse($pet->last_appointment_at)->isoFormat('MMM DD, OY')}}</span>
+                        @endif
+                    @else
+                        Have not visited the Clinic
+                    @endif
+                </td>
+                
             </tr>
 
             @if (!auth()->user()->isAdmin())

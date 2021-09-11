@@ -29,6 +29,7 @@ class SettingsController extends Controller
             $setting->stop_orders = 0;
 
         $setting->appointment_fee = $request->input('appointment_fee');
+        $setting->weeks = $request->input('weeks');
 
         $setting->save();        
 

@@ -15,6 +15,7 @@ use App\Models\AppointmentServices;
 use Carbon\Carbon;
 use App\Mail\AppointmentSet;
 use App\Mail\AppointmentReschedule;
+use App\Mail\AppointmentFollowUp;
 
 
 class AppointmentsController extends Controller
@@ -172,8 +173,11 @@ class AppointmentsController extends Controller
 
         if($pet->checked == 0)
             $pet->checked = 1;
+
+        $pet->last_appointment_at = Carbon::now()->toDateString();
         
-        $pet->save();        
+        $pet->save();
+                
         $appointment->save();
 
         return redirect('/admin');
@@ -307,6 +311,61 @@ class AppointmentsController extends Controller
 
         return 0;
 
+    }
+
+    public static function sendFollowUps(){
+
+        $last_appointments_pets = collect(new Pet);
+        $setting = Setting::first();
+
+        if(is_null(Pet::first()))
+            return;
+
+        if(is_null(Pet::where('last_appointment_at', '!=', null)->first()))
+            return;
+
+
+        foreach(Pet::all() as $pet){            
+            if(!is_null($pet->last_appointment_at))
+                $last_appointments_pets->push($pet);
+        }
+
+        
+        $filteredUsers = $last_appointments_pets->filter(function ($pet, $key) {
+            return $pet != null;
+        });
+        
+        $counter = 0;
+
+        foreach($filteredUsers as $pet){
+
+            $threshold = Carbon::parse($pet->last_appointment_at)->addWeeks($setting->weeks);                           
+
+            if(Carbon::now()->toDateString() >= $threshold->toDateString()){
+
+                $appointment = $pet->appointments->last();
+
+                $services = [];
+
+                foreach($appointment->services() as $service){
+                    array_push($services, Service::find($service->id)->desc);                            
+                }
+        
+                $list = implode(', ', $services);
+
+                Mail::to($pet->owner->user)->send(new AppointmentFollowUp($pet->owner->user->first_name. ' ' . $pet->owner->user->last_name, $pet->name, Carbon::parse($pet->last_appointment_at)->isoFormat('MMMM DD, OY'), $list));               
+            }
+
+            
+            ++$counter;
+
+            if($counter == $filteredUsers->count()){
+                $setting->last_follow_up = Carbon::now()->toDateString();
+                $setting->save();
+            }
+            
+        }      
+        
     }
 
 }
