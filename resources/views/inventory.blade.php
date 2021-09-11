@@ -6,10 +6,11 @@
 
 <?php 
     $merchant_id =  config('app.paypalMerchantID');
+
 ?>
 
 <script>
-        merchant_id = {!! json_encode($merchant_id) !!}
+        var merchant_id = {!! json_encode($merchant_id) !!}
 </script>
 
     <div class="container ">
@@ -19,8 +20,79 @@
             <div class="col text-center">
 
                 <h1>Our Products</h1> 
+                              
 
             </div>
+
+        </div>
+        <div class="row">
+
+            <div class="col">
+
+                @if (\App\Models\Setting::first()->stop_orders)
+
+                    <span class="text-danger float-left">*Clinic is not accepting orders at the moment</span>
+                    
+                @endif
+
+                <div>
+                    <div class="dropdown float-right ">
+                        <a class="btn btn-light border dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @switch($sortBy)
+                                @case('asc')
+                                    Ascending
+                                    @break
+                                @case('desc')
+                                    Descending
+                                    @break                              
+                            @default
+                                
+                        @endswitch
+                        </a>
+                      
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                          <a class="dropdown-item" {{$sortBy == 'asc' ? 'active' : ''}} href="{{url('/inventory/' . $orderBy . '/asc')}}">Ascending</a>
+                          <a class="dropdown-item" {{$sortBy == 'desc' ? 'active' : ''}} href="{{url('/inventory/' . $orderBy . '/desc')}}">Descending</a>                          
+                        </div>
+                      </div>    
+                </div>
+
+                <div>
+                    <div class="dropdown float-right mr-2">
+                        <a  class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          @switch($orderBy)
+                              @case('quantity')
+                                  Quantity
+                                  @break
+                              @case('desc')
+                                  Description
+                                  @break
+                              @case('reg_price')
+                                  Price
+                                  @break
+                              @default
+                                  
+                          @endswitch
+                        </a>
+                      
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                          <a class="dropdown-item" {{$orderBy == 'quantity' ? 'active' : ''}} href="{{url('/inventory/quantity/' . $sortBy)}}">Quantity</a>
+                          <a class="dropdown-item" {{$orderBy == 'desc' ? 'active' : ''}} href="{{url('/inventory/desc/' . $sortBy)}}">Description</a>
+                          <a class="dropdown-item" {{$orderBy == 'reg_price' ? 'active' : ''}} href="{{url('/inventory/reg_price/' . $sortBy)}}">Price</a>
+                        </div>
+                      </div>    
+                </div>
+
+                <div class="mr-2 float-right my-1" style="font-size: .8em !important; font-family:Verdana, Geneva, Tahoma, sans-serif;">
+                    Sort By
+
+                </div>
+
+               
+
+            </div>
+
+                  
 
         </div>
         
@@ -127,13 +199,15 @@
             
         @endif
 
-        @if (!is_null(\App\Models\Item::first()))
+        @if (!is_null($the_items->first()))
         
             <div class="row">
 
-                <div class="d-flex justify-content-center container mt-5">
+                <div class="d-flex justify-content-center container mt-5">                    
+
+         
                     
-                    @foreach (\App\Models\Item::orderBy('quantity', 'desc')->get() as $item)
+                    @foreach ($the_items as $item)
 
                         <div class="card p-3 bg-white mx-auto border border-secondary">
                             <div>
@@ -179,14 +253,26 @@
                                                                             document.getElementById('quantity-{{$item->id}}'),                                                                                    
                                                                             document.getElementById('price-{{$item->id}}'),
                                                                             document.getElementById('priceLabel-{{$item->id}}')                                                                    
-                                                                            )" class="btn btn-outline-info" type="button" {{$item->quantity < 1 ? 'disabled' : ''}}>-</button>
+                                                                            )" class="btn btn-outline-info" type="button" 
+
+                                                                            @if ($item->quantity < 1 || \App\Models\Setting::first()->stop_orders == 1)
+                                                                                {{'disabled'}}
+                                                                            @endif
+                                                                            
+                                                                            >-</button>
                                         </div>
                                         <input id="quantity-{{$item->id}}" oninput="render(document.getElementById('client-{{auth()->user()->client->id}}'),
                                                                                         document.getElementById('item-{{$item->id}}'),
                                                                                         document.getElementById('quantity-{{$item->id}}'),                                                                                    
                                                                                         document.getElementById('price-{{$item->id}}'),
                                                                                         document.getElementById('priceLabel-{{$item->id}}')                                                                                    
-                                                                                        )" type="number" min="1" max="{{$item->quantity}}" class="form-control w-25 text-center" value="0" {{$item->quantity < 1 ? 'disabled' : ''}}>
+                                                                                        )" type="number" min="1" max="{{$item->quantity}}" class="form-control w-25 text-center" value="0" 
+
+                                                                                        @if ($item->quantity < 1 || \App\Models\Setting::first()->stop_orders == 1)
+                                                                                            {{'disabled'}}
+                                                                                        @endif
+                                                                                        
+                                                                                        >
                                         <div class="input-group-append">
                                             <button onclick="increaseQuantity({{$item->quantity}}, 
                                                                             document.getElementById('client-{{auth()->user()->client->id}}'),
@@ -194,7 +280,12 @@
                                                                             document.getElementById('quantity-{{$item->id}}'),                                                                                    
                                                                             document.getElementById('price-{{$item->id}}'),
                                                                             document.getElementById('priceLabel-{{$item->id}}') 
-                                                                            )" class="btn btn-outline-info" type="button" {{$item->quantity < 1 ? 'disabled' : ''}}>+</button>
+                                                                            )" class="btn btn-outline-info" type="button" 
+
+                                                                            @if ($item->quantity < 1 || \App\Models\Setting::first()->stop_orders == 1)
+                                                                              {{'disabled'}}
+                                                                            @endif
+                                                                            >+</button>
                                         </div>
 
                                     </div>
@@ -232,13 +323,19 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Buy Item</h5>
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Buy Item</h5>                                  
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 
                                 <div class="modal-body">                                      
+                                    @if (\App\Models\Setting::first()->stop_orders == 1)
+                                        <div class="text-center">
+                                            Sorry, NVP CLINIC is not accepting orders right now. Check again later.
+
+                                        </div>
+                                    @endif
                                     <div id="paypal-button-container"></div>
                                 </div>
                             
@@ -305,6 +402,8 @@
 
 
 <script>
+
+
 $(document).ready( function () {
     $('#products').DataTable();
 } );

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Item;
 
 class HomeController extends Controller
 {
@@ -26,9 +27,10 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function showInventory(){
-    
-        return view('inventory');
+    public function showInventory($orderBy = 'quantity', $sortBy = 'desc'){                  
+        return view('inventory')->with('the_items', Item::orderBy($orderBy, $sortBy)->get())
+                                ->with('orderBy', $orderBy)
+                                ->with('sortBy', $sortBy);        
         
     }
 
