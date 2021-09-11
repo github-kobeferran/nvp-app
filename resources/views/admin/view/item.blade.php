@@ -91,7 +91,7 @@
                     <label for="quantity">Regular Price</label>
                     <span class="ml-3">&#8369;</span>{{Form::number('reg_price', '5.00', ['class' => 'form-control ml-1', 'min' => '5', 'max' => '100000', 'step' => '0.01'])}}
 
-                </div>
+                </div>                
 
                 <label for="">Note</label>                    
                 <div class="form-inline mb-4">
@@ -317,7 +317,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             </div>
-                            {!!Form::open(['url' => 'updateitem'])!!}
+                            {!!Form::open(['url' => 'updateitem', 'files' => true])!!}
                             <div class="modal-body">
 
                                 {{Form::hidden('id', $item->id)}}
@@ -376,8 +376,21 @@
 
                                 <div class="form-group">
 
+                                    @if (!is_null($item->image))
+                                        <img src="{{url('storage/images/item/' . $item->image)}}" width="200" alt="">                                        
+                                    @else
+                                        <img src="{{url('storage/images/item/no-image-item.jpg')}}" width="200" alt="">                                        
+                                    @endif
+                                    
+                                    <label for="">Image</label>
+                                    {{Form::file('image', ['class' => 'form-control'])}}
+
+                                </div>
+
+                                <div class="form-group">
+
                                     <label for="quantity">Quantity</label>
-                                    {{Form::number('quantity', $item->quantity, ['class' => 'form-control ml-2', 'min' => '1', 'max' => '10000'])}}
+                                    {{Form::number('quantity', $item->quantity, ['class' => 'form-control ml-2', 'min' => '0', 'max' => '10000'])}}
 
                                 </div>
 

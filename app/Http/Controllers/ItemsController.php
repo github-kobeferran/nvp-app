@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Item;
 use App\Models\Client;
 use App\Models\Transaction;
@@ -102,7 +103,7 @@ class ItemsController extends Controller
 
     }
 
-    public function update(Request $request){        
+    public function update(Request $request){                  
 
         if($request->method() != 'POST')
             return redirect()->back();
@@ -121,6 +122,23 @@ class ItemsController extends Controller
         if ($validator->fails())
             return redirect()->back()->withErrors($validator)->withInput();  
 
+        if($request->hasFile('image')){
+            $validator = Validator::make($request->all(), [
+                'image' => 'image|max:5000',  
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->route('item.view')->withErrors($validator)->withInput();                         
+            }
+
+            $filenameWithExt = $request->file('image')->getClientOriginalName();        
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);        
+            $extension = $request->file('image')->getClientOriginalExtension();        
+            $fileNameToStore = $filename.'_'.time().'.'.$extension;        
+            $path = $request->file('image')->storeAs('public/images/item/', $fileNameToStore);            
+        }
+    
+
         $item = Item::find($request->input('id'));
 
         $item->desc = $request->input('desc');
@@ -131,10 +149,17 @@ class ItemsController extends Controller
         else 
             $item->pet_type_id = $request->input('type_id');
 
+        if($request->hasFile('image')){
+            if(!empty($item->image))
+                Storage::disk('public')->delete('images/item/' . $item->image);
+
+            $item->image = $fileNameToStore;   
+        }
+        
+
         $item->quantity = $request->input('quantity');
         $item->deal_price = $request->input('deal_price');
         $item->reg_price = $request->input('reg_price');
-        $item->out_of_stock = 0;
 
         $item->save();
 

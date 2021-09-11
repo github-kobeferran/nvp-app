@@ -246,7 +246,7 @@ class PetsController extends Controller
 
         if($request->hasFile('image')){
 
-            if(!empty($client->image))
+            if(!empty($pet->image))
                 Storage::disk('public')->delete('images/pet/' . $pet->image);
 
             $pet->image = $fileNameToStore;
@@ -285,8 +285,8 @@ class PetsController extends Controller
             }
 
             $pet = Pet::where('client_id', $user->client->id)
-                        ->where('name', $pet)
-                        ->first();
+                      ->where('name', $pet)
+                      ->first();
             
             $client = $user->client;
 

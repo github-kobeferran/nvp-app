@@ -40,7 +40,7 @@
 
                         <div class="form-group">
 
-                            <label for="type">Client</label>
+                            <a href="/admin/clients" class="text-dark"><label for="type">Client</label></a>
                 
                 
                             <?php                     
@@ -70,7 +70,7 @@
 
                         <div class="form-group">
 
-                            <label for="type">Item</label>
+                            <a href="/admin/inventory" class="text-dark"><label for="type">Item</label></a>
                 
                 
                             <?php                     
