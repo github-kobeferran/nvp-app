@@ -36,6 +36,7 @@ Route::any('/registerpetadmin', [App\Http\Controllers\PetsController::class, 'st
 Route::any('/reschedappointment', [App\Http\Controllers\AppointmentsController::class, 'updateSchedule'])->name('appointment.reschedule')->middleware(['verified', 'client.updated']);
 Route::get('/transactions/{email?}', [App\Http\Controllers\ClientsController::class, 'viewTransactions'])->name('client.view.transactions')->middleware(['verified', 'client.updated']);
 Route::get('/validateappointmentdate/{date}', [App\Http\Controllers\AppointmentsController::class, 'validateDate'])->name('appointment.date.validate')->middleware(['verified', 'client.updated']);
+Route::get('/myorders/{email}', [App\Http\Controllers\ClientsController::class, 'viewOrders'])->name('client.view.orders')->middleware(['verified', 'client.updated']);
 
 
 Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->group(function () {
@@ -73,6 +74,11 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/getclientpets/{id}', [App\Http\Controllers\ClientsController::class, 'getRemainingPets'])->name('client.pets');
     Route::any('/updatesetting', [App\Http\Controllers\SettingsController::class, 'update'])->name('setting.update');    
     Route::any('/abadonappointment', [App\Http\Controllers\AppointmentsController::class, 'abandon'])->name('appointment.reschedule');
+    Route::any('/admin/orders', [App\Http\Controllers\OrdersController::class, 'view'])->name('order.view');
+    Route::any('/orderdone', [App\Http\Controllers\OrdersController::class, 'done'])->name('order.done');
+    Route::get('/getitemquantity/{itemid}', [App\Http\Controllers\ItemsController::class, 'getQuantity'])->name('item.quantity');
+    Route::get('/getclientname/{clientid}', [App\Http\Controllers\ClientsController::class, 'getName'])->name('client.getname');
+    Route::any('/createorder', [App\Http\Controllers\OrdersController::class, 'store'])->name('order.store');    
 
 });
 
@@ -85,7 +91,7 @@ Route::middleware([App\Http\Middleware\ProtectClientRoutesMiddleware::class])->g
     Route::get('/gettotalservicefee/{ids}', [App\Http\Controllers\ServicesController::class, 'totalFee'])->name('service.totalFee');    
     Route::get('/setappointment/{petID}/{date}/{services}', [App\Http\Controllers\AppointmentsController::class, 'clientStore'])->name('appointment.clientstore');    
     Route::get('/makeorderclient/{clientid}/{itemid}/{quantity}', [App\Http\Controllers\OrdersController::class, 'clientStore'])->name('order.clientStore');    
-
+    
 });
 
 

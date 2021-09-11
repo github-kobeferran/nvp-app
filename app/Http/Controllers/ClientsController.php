@@ -201,4 +201,24 @@ class ClientsController extends Controller
 
     }
 
+    public function viewOrders($email){
+
+        if(is_null($email)){
+            if(auth()->user()->isAdmin())
+                return redirect('/admin');
+            else
+                return view('client.orders')->with('the_client', User::where('email', auth()->user()->email)->first()->client);            
+        }else {
+            return view('client.orders')->with('the_client',  User::where('email', $email)->first()->client);            
+        }
+
+
+    }
+
+    public function getName($clientid){
+        $client = Client::find($clientid);
+
+        return $client->user->first_name . ' ' . $client->user->last_name;
+    }
+
 }

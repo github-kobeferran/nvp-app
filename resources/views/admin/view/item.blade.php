@@ -31,7 +31,7 @@
 
             <div class="col">
 
-                {!!Form::open(['url' => '/additem'])!!}
+                {!!Form::open(['url' => '/additem', 'files' => true])!!}
             
                <div class="form-group">
 
@@ -67,8 +67,8 @@
 
                 <div class="form-inline mb-4">
 
-                    <label for="">Image</label>
-                    {{Form::file('image')}}
+                    <label class="mr-2" for="">Image</label>
+                    {{Form::file('image', ['class' => 'form-control'])}}                    
 
                 </div>
 

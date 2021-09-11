@@ -2,6 +2,23 @@
 
 @section('content')
 
+@if (!is_null(\App\Models\Appointment::where('date', '<', \Carbon\Carbon::now())->where('status', 0)->first()))
+
+    <?php 
+        $abandonedAppointments = \App\Models\Appointment::where('date', '<', \Carbon\Carbon::now())->where('status', 0)->get();
+    ?>
+    
+    @foreach ($abandonedAppointments as $appointment)
+        <?php         
+            $appointment->status = 2;
+            $appointment->save();
+        ?>        
+    @endforeach
+    
+@endif
+
+
+
 @if (is_null(\App\Models\Setting::first()))    
     <?php \App\Models\Setting::create([]); ?>
 @endif
@@ -10,13 +27,13 @@
 
 <div class="container">
 
-    <h1 class="m-2 bg-info text-white border border-primary text-center rounded">ADMIN DASHBOARD</h1>
+    <h1 class="m-2 bg-info text-white border border-primary text-center rounded-0">ADMIN DASHBOARD</h1>
 
-    <div class="row">
+    <div class="row d-flex justify-content-between">
 
-        <div class="col">
+        <div class="mx-auto my-1">
             
-            <a href="{{url('/admin/clients')}}" class="btn btn-secondary btn-block">
+            <a href="{{url('/admin/clients')}}" class="btn btn-secondary btn-block rounded-0">
                 @if(\App\Models\User::where('user_type', 0)->count() < 1 )
                 No Clients
                 @else
@@ -26,9 +43,9 @@
 
         </div>
 
-        <div class="col">
+        <div class="mx-auto my-1">
 
-            <a href="{{url('/admin/pets')}}"  class="btn btn-danger btn-block">
+            <a href="{{url('/admin/pets')}}"  class="btn btn-danger btn-block rounded-0">
                 @empty(\App\Models\Pet::first() )
                 No Pets
                 @else
@@ -38,13 +55,43 @@
 
         </div>
 
-        <div class="col">
+        <div class="mx-auto my-1">
 
-            <a href="{{url('/admin')}}" class="btn btn-primary btn-block">
+            <a href="{{url('/admin')}}" class="btn btn-primary btn-block rounded-0">
                 @empty(\App\Models\Appointment::all())
                 No Appointments
                 @else
                 Appointment{{\App\Models\Appointment::where('status', 0)->count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Appointment::count()}}</span>
+                @endempty
+            </a>
+
+        </div>
+
+        <div class="mx-auto my-1">
+
+            <a href="{{url('/admin/inventory#itemsTable')}}" class="btn btn-warning btn-block rounded-0">
+                @empty(\App\Models\Item::all())
+                No items in the inventory
+                @else
+                    @if (\App\Models\Item::where('quantity', 0)->count() > 0)
+                        Out of stock items <span class="badge badge-light">{{\App\Models\Item::where('quantity', 0)->count() }}</span>
+                    @else
+                        Items in the inventory <span class="badge badge-light">{{\App\Models\Item::count()}}</span>
+                    @endif
+                @endempty
+            </a>
+
+        </div>
+
+        <div class="mx-auto my-1">
+
+            <a href="{{url('/admin/orders')}}" class="btn btn-info btn-block rounded-0">
+                @empty(\App\Models\Order::where('status', 0)->first() )
+                    No pending deliveries/pickups
+                @else
+                    @if (\App\Models\Order::where('status', 0)->count() > 0)
+                        Pending deliveries/pickups <span class="badge badge-light">{{\App\Models\Order::where('status', 0)->count()}}</span>              
+                    @endif
                 @endempty
             </a>
 

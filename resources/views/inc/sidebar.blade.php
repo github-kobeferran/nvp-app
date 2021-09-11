@@ -14,6 +14,7 @@
     @if (auth()->user()->isAdmin())
 
         <a href="/admin">Dashboard</a>
+        <a href="/admin/orders">Orders</a>
         <a href="/admin/clients">Clients</a>
         <a href="/admin/pets">Pets</a>
         <a href="/admin/inventory">Inventory</a>
@@ -26,7 +27,8 @@
         
     @else
 
-        <a href="/user">My Profile</a>
+        <a href="/user">My Profile</a>        
+        <a href="/myorders/{{auth()->user()->email}}">Orders</a>
         <a href="/transactions/{{auth()->user()->email}}">Transactions</a>
         
     @endif

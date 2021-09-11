@@ -18,6 +18,8 @@ class CreateOrdersTable extends Migration
             $table->integer('transaction_id');
             $table->integer('item_id');
             $table->unsignedSmallInteger('quantity');
+            $table->boolean('status')->default(0);
+            $table->integer('done_by')->nullable();
             $table->timestamps();
         });
     }

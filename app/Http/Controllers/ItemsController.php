@@ -20,8 +20,8 @@ class ItemsController extends Controller
 
     }
 
-    public function store(Request $request){        
-
+    public function store(Request $request){  
+        
         if($request->method() != 'POST')
             return redirect()->back();     
 
@@ -31,6 +31,7 @@ class ItemsController extends Controller
         $validator = Validator::make($request->all(), [
             'desc' => 'required|regex:/[A-Za-z0-9]+/|max:100',         
             'category_id' => 'required',
+            
             'quantity' => 'required|min:1|max:10000',
             'deal_price' => 'required|gte:5|lte:100000',
             'reg_price' => 'required|gte:5|lte:100000',
@@ -45,7 +46,23 @@ class ItemsController extends Controller
         ]);    
 
         if ($validator->fails())
-            return redirect()->back()->withErrors($validator)->withInput();                         
+            return redirect()->back()->withErrors($validator)->withInput(); 
+            
+        if($request->hasFile('image')){
+            $validator = Validator::make($request->all(), [
+                'image' => 'image|max:5000',  
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->route('item.view')->withErrors($validator)->withInput();                         
+            }
+
+            $filenameWithExt = $request->file('image')->getClientOriginalName();        
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);        
+            $extension = $request->file('image')->getClientOriginalExtension();        
+            $fileNameToStore = $filename.'_'.time().'.'.$extension;        
+            $path = $request->file('image')->storeAs('public/images/item/', $fileNameToStore);            
+        }
 
         $item = new Item;
 
@@ -56,6 +73,9 @@ class ItemsController extends Controller
             $item->pet_type_id = null;            
         else 
             $item->pet_type_id = $request->input('type_id');
+
+        if($request->hasFile('image'))
+            $item->image = $fileNameToStore;                    
 
         $item->quantity = $request->input('quantity');
         $item->deal_price = $request->input('deal_price');
@@ -122,18 +142,17 @@ class ItemsController extends Controller
 
     } 
 
-    // public function makeOrderClient($clientid, $itemid, $quantity){
-
-    //     $client = Client::find($clientid);
-    //     $item = Item::find($itemid);
-
-        
-
-    // }
+   
 
     public function export() 
     {
         return Excel::download(new ItemsExport, 'INVENTORY-'. \Carbon\Carbon::now()->isoFormat('OY-MMM-DD') . '.xlsx');
+    }
+
+    public function getQuantity($itemid){
+
+        return Item::find($itemid);
+
     }
 
 
