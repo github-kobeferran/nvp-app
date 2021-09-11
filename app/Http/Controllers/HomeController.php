@@ -27,7 +27,8 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function showInventory($orderBy = 'quantity', $sortBy = 'desc'){                  
+    public function showInventory($orderBy = 'quantity', $sortBy = 'desc'){         
+                 
         return view('inventory')->with('the_items', Item::orderBy($orderBy, $sortBy)->get())
                                 ->with('orderBy', $orderBy)
                                 ->with('sortBy', $sortBy);        

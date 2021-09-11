@@ -70,6 +70,9 @@
                               @case('reg_price')
                                   Price
                                   @break
+                              @case('created_at')
+                                  Newest
+                                  @break
                               @default
                                   
                           @endswitch
@@ -79,6 +82,7 @@
                           <a class="dropdown-item" {{$orderBy == 'quantity' ? 'active' : ''}} href="{{url('/inventory/quantity/' . $sortBy)}}">Quantity</a>
                           <a class="dropdown-item" {{$orderBy == 'desc' ? 'active' : ''}} href="{{url('/inventory/desc/' . $sortBy)}}">Description</a>
                           <a class="dropdown-item" {{$orderBy == 'reg_price' ? 'active' : ''}} href="{{url('/inventory/reg_price/' . $sortBy)}}">Price</a>
+                          <a class="dropdown-item" {{$orderBy == 'created_at' ? 'active' : ''}} href="{{url('/inventory/created_at/' . $sortBy)}}">Newest</a>
                         </div>
                       </div>    
                 </div>

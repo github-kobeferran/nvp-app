@@ -130,7 +130,7 @@
                         <thead>
                             <tr>
                                 <th>Description</th>
-                                <th style="width: 20px;">Action</th>
+                                <th >Action</th>
                             </tr>
                         </thead>
                         <tbody>
