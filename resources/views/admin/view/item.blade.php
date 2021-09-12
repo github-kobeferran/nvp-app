@@ -313,7 +313,7 @@
                         <div class="modal fade" id="editItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">                    
                             <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content"  style="max-width: 80% !important;" >
-                                <div class="modal-header">
+                                <div class="modal-header bg-primary">
                                 <h5 class="modal-title" id="exampleModalLongTitle">Edit <b>{{ucfirst($item->desc)}}</b></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -429,14 +429,17 @@
                         <div class="modal fade"  id="deleteItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header bg-danger">
                                 <h5 class="modal-title" id="exampleModalLongTitle">Delete <b>{{ucfirst($item->desc)}}</b></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                                 </div>
                                 <div class="modal-body">
-                                You sure you want to delete {{ucfirst($item->desc)}}?
+                                Deleting items will result to past records associated by it to have missing data.
+                                <br>
+                                <br>
+                                Still proceed to continue deleting item <b>{{ucfirst($item->desc)}}</b>?                                
                                 </div>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

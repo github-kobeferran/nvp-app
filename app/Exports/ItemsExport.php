@@ -41,6 +41,7 @@ class ItemsExport implements FromCollection, WithMapping, WithHeadings, WithStyl
             $items->desc,
             $items->quantity,
             $items->deal_price,
+            !is_null($items->note) ? $items->note : ' ',
         ];
     }
 
@@ -51,6 +52,7 @@ class ItemsExport implements FromCollection, WithMapping, WithHeadings, WithStyl
             'Description',
             'Quantity',
             'Dealers Price',            
+            'Note',            
         ];
     }
 }

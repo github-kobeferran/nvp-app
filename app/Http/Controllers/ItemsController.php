@@ -81,6 +81,7 @@ class ItemsController extends Controller
         $item->quantity = $request->input('quantity');
         $item->deal_price = $request->input('deal_price');
         $item->reg_price = $request->input('reg_price');
+        $item->note = $request->input('note');
 
         $item->save();
 
@@ -160,6 +161,7 @@ class ItemsController extends Controller
         $item->quantity = $request->input('quantity');
         $item->deal_price = $request->input('deal_price');
         $item->reg_price = $request->input('reg_price');
+        $item->note = $request->input('note');
 
         $item->save();
 

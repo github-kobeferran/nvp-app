@@ -8,7 +8,11 @@
 
         <div class="col text-center">
                         
-            <h1>Orders</h1>            
+            <h1>Orders</h1>  
+            
+            @if (!is_null(\App\Models\Order::first()))
+                <a href="{{url('ordersreport')}}" class="btn btn-success float-right text-white">Orders to Excel</a>
+            @endif
 
             @include('inc.messages')
 

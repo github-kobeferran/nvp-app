@@ -79,6 +79,8 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/getitemquantity/{itemid}', [App\Http\Controllers\ItemsController::class, 'getQuantity'])->name('item.quantity');
     Route::get('/getclientname/{clientid}', [App\Http\Controllers\ClientsController::class, 'getName'])->name('client.getname');
     Route::any('/createorder', [App\Http\Controllers\OrdersController::class, 'store'])->name('order.store');    
+    Route::get('/ordersreport', [App\Http\Controllers\TransactionsController::class, 'ordersExport'])->name('orders.export');    
+    Route::get('/appointmentsreport', [App\Http\Controllers\TransactionsController::class, 'appointmentsExport'])->name('appointments.export');    
 
 });
 

@@ -303,7 +303,7 @@
             </li>
             <li class="nav-item border-bottom-0">
                 <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">All Appointments</a>
-            </li>
+            </li>          
             
         </ul>
         <!-- Tab panes -->
@@ -746,7 +746,10 @@
                 </div>
             </div>
 
-          
+            <div class="tab-pane" id="tabs-3" role="tabpanel">
+
+          asdf
+            </div>
         </div>
         
 
