@@ -116,7 +116,7 @@
 
                         <div class="form-group">
 
-                            <a href="/admin/clients" class="text-dark"><label for="type">Client</label></a>
+                            <a href="/admin/clients" class="">Client</a>
                 
                 
                             <?php                     
@@ -146,7 +146,7 @@
 
                         <div class="form-group">
 
-                            <a href="/admin/inventory" class="text-dark"><label for="type">Item</label></a>
+                            <a href="/admin/inventory" class="">Item</a>
                 
                 
                             <?php                     

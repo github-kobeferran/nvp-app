@@ -144,7 +144,7 @@ function getSelectValues(select) {
 
                     <div class="form-group">
                 
-                        <label for="type"><a href="/services" class="text-dark">Service</a></label>
+                        <a href="/services" class="">Service</a>
                         
                         <?php                     
                     

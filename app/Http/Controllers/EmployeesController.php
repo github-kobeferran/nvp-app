@@ -15,7 +15,10 @@ class EmployeesController extends Controller
  
     public function view(){
 
-        return view('admin.view.employees');
+        if(is_null(auth()->user()->employee))
+            return view('admin.view.employees');
+        else
+            return redirect()->back();
 
     }
 

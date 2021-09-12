@@ -25,7 +25,7 @@
         @else
     
             <h2 class="text-center">Pet Registration</h2>
-            <em><p class="mb-4 text-center text-muted">Owner: <a href="{{url('/user/' . $user->email)}}" style="text-decoration: none; color: inherit;">{{$user->first_name . ' ' . $user->last_name}}</a></p></em>
+            <em><p class="mb-4 text-center text-muted">Owner: <a href="{{url('/user/' . $user->email)}}" >{{$user->first_name . ' ' . $user->last_name}}</a></p></em>
     
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
