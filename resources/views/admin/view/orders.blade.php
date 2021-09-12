@@ -9,14 +9,14 @@
         <div class="col text-center">
                         
             <h1>Orders</h1>  
+            <hr>            
             
             @if (!is_null(\App\Models\Order::first()))
-                <a href="{{url('ordersreport')}}" class="btn btn-success float-right text-white">Orders to Excel</a>
+                <a href="{{url('ordersreport')}}" class="btn btn-success rounded-0 my-1 border border-dark float-right text-white">Orders to Excel  <i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
             @endif
 
             @include('inc.messages')
 
-            <hr>            
 
         </div>
 

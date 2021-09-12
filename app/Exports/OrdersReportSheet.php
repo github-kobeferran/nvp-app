@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use App\Models\Appointment;
 use App\Models\Order;
 use Carbon\Carbon;
 
@@ -62,6 +61,7 @@ class OrdersReportSheet implements FromCollection, WithMapping, WithHeadings, Wi
             'CLIENT EMAIL AND NAME',
             'ITEM',
             'QUANTITY',
+            'TOTAL AMOUNT',
             'STATUS',            
             'DONE BY',            
         ];
@@ -75,6 +75,7 @@ class OrdersReportSheet implements FromCollection, WithMapping, WithHeadings, Wi
             $orders->transaction->client->user->email . ' - ' . strtoupper($orders->transaction->client->user->first_name) . ' ' . strtoupper($orders->transaction->client->user->last_name),
             strtoupper($orders->item->desc),
             $orders->quantity,
+            $orders->item->reg_price * $orders->quantity,
             $orders->status > 0 ? 'Done' : 'Pending', 
             !is_null($orders->done_by) ? \App\Models\User::find($orders->done_by)->first_name . ' ' . \App\Models\User::find($orders->done_by)->last_name : '', 
         ];

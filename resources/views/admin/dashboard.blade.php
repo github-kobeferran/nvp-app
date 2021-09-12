@@ -282,8 +282,15 @@
         
     <div class="container mt-2">
         
-        <h3 class="mt-3 text-center " style="text-shadow: 1px 1px 10px rgb(112, 112, 112);">Appointments</h3>
-        
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-3 text-center " style="text-shadow: 1px 1px 10px rgb(112, 112, 112);">Appointments</h3>
+                <a href="{{url('/appointmentsreport')}}" class="btn btn-success my-1 rounded-0 border border-dark float-right">Export Appointments <i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+                
+
         <ul class="nav nav-tabs mb-2" role="tablist">
             <li class="nav-item border-bottom-0">
                 <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
