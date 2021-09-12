@@ -65,7 +65,7 @@
                 @empty(\App\Models\Appointment::all())
                 No Appointments
                 @else
-                Appointment{{\App\Models\Appointment::where('status', 0)->count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Appointment::count()}}</span>
+                Appointment {{\App\Models\Appointment::where('status', 0)->count() > 0 ? 's' : ''}} <span class="badge badge-light">{{\App\Models\Appointment::where('date', \Carbon\Carbon::now()->toDateString())->where('status', 0)->count()}}</span>
                 @endempty
             </a>
 

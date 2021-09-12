@@ -93,7 +93,7 @@ class ClientsController extends Controller
             'first_name' => 'required|regex:/^[\pL\s\-]+$/u|max:50',                                                          
             'middle_name' => 'required|regex:/^[\pL\s\-]+$/u|max:50',                                                          
             'dob' => 'date|before:'. $before_date->toDateString() . '|after:' . $after_date,            
-            'contact' => 'digits_between:10,15',
+            'contact' => 'digits:11',
             'address' => 'max:255',
         ],[
             'dob.required' => 'Date of Birth is required',

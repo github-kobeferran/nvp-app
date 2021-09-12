@@ -58,7 +58,7 @@
 
                     <tbody>
 
-                        @foreach ($clientOrders as $order)
+                        @foreach ($clientOrders->sortByDesc('updated_at'); as $order)
 
                             <tr>
                                 <td>

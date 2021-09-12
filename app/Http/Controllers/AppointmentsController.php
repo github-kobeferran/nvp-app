@@ -316,6 +316,7 @@ class AppointmentsController extends Controller
     public static function sendFollowUps(){
 
         $last_appointments_pets = collect(new Pet);
+        $hadSent = false;
         $setting = Setting::first();
 
         if(is_null(Pet::first()))
@@ -354,14 +355,18 @@ class AppointmentsController extends Controller
                 $list = implode(', ', $services);
 
                 Mail::to($pet->owner->user)->send(new AppointmentFollowUp($pet->owner->user->first_name. ' ' . $pet->owner->user->last_name, $pet->name, Carbon::parse($pet->last_appointment_at)->isoFormat('MMMM DD, OY'), $list));               
+                $hadSent = true;
             }
 
             
             ++$counter;
 
             if($counter == $filteredUsers->count()){
-                $setting->last_follow_up = Carbon::now()->toDateString();
-                $setting->save();
+
+                if($hadSent){
+                    $setting->last_follow_up = Carbon::now()->toDateString();
+                    $setting->save();
+                }
             }
             
         }      

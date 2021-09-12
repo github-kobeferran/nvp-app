@@ -140,7 +140,9 @@
 
 <script>
 $(document).ready( function () {
-    $('#orders').DataTable();
+    $('#orders').DataTable( {
+        "order": [[ 0, "desc" ]]
+    } );
 } );
 
 </script>
