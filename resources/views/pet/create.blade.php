@@ -189,16 +189,13 @@ petTypeSelect.addEventListener('change', () => {
 
     getBreeds(petTypeSelect.selectedOptions[0].label.toLowerCase());
     
-
 });
 
 function getBreeds(type){        
 
     let xhr = new XMLHttpRequest();
 
-    for(i = 0; i < breedSelect.length; i++){
-        breedSelect.remove(i);
-    }
+    removeOptions(breedSelect);
 
     switch(type){
         case 'dog':     
@@ -292,7 +289,7 @@ function enableSpecifyBreed(){
         breedSelect.value = null;
         breedSelect.required = true;
         breedTextInput.required = false;
-    }
+    }      
 
     $('.selectpicker').selectpicker('refresh');
 
@@ -319,8 +316,17 @@ function enableSpecifyColor(){
         colorTextInput.required = false;
     }
 
+ 
+
     $('.selectpicker').selectpicker('refresh');
 
+}
+
+function removeOptions(selectElement) {
+   var i, L = selectElement.options.length - 1;
+   for(i = L; i >= 0; i--) {
+      selectElement.remove(i);
+   }
 }
 
 
