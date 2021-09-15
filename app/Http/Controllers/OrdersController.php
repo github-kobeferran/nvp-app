@@ -23,7 +23,7 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             'client_id' => 'required',                                                          
             'item_id' => 'required',
-            'quantity' => 'required|numeric|gt:1',
+            'quantity' => 'required|numeric|gte:1',
         ]);
 
         if ($validator->fails()) {
