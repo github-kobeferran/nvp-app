@@ -41,19 +41,11 @@
 
                 @else
 
-                    <h3 class="float-right">Pet Types</h3>
-
-                    <div class="input-group mt-3 mb-1">
-                        <div class="input-group-prepend ">
-                            <span class="input-group-text bg-info text-white" id="basic-addon1"><i class="fa fa-search " aria-hidden="true"></i>
-                        </span>
-                        </div>
-                        <input id="petTypeSearchBox" type="text" class="form-control form-control-lg" placeholder="Search.." aria-label="" aria-describedby="basic-addon1">
-                    </div>
+                    <h3 class="float-right">Pet Types</h3>                
 
                     <div class="table-responsive" style="max-height: 300px; overflow: auto; display:inline-block;" >
 
-                        <table class="table table-bordered border">
+                        <table id="pettypes" class="table table-bordered border">
 
                             <thead class="">
 
@@ -214,6 +206,7 @@
 
 $(document).ready(function() {
     $('#pets').DataTable();
+    $('#pettypes').DataTable();
 } );
 
 let petTypePanel = document.getElementById('petTypePanel');
@@ -232,73 +225,6 @@ function togglePetTypes(){
 
 }
 
-function searchType(){
-
-    let txt = petTypeSearchBox.value;
-
-    let xhr = new XMLHttpRequest();
-
-    xhr.open('GET', APP_URL + '/admin/pettype/search/'+ txt, true);
-
-    xhr.onload = function() {
-
-        if (this.status == 200) {
-
-            let types = JSON.parse(this.responseText);
-
-            let output = `<tbody id="type-list">`;
-
-            for(let i in types){
-
-                output+= `<tr>`;    
-
-                    output+= `<td style="font-size: large;">` + capitalizeFirstLetter(types[i].type) +`</td>`;
-                    output+= `<td colspan="2" >
-                        <button type="button" onclick="editType(`+ types[i].id +`)" class="btn btn-info mx-auto text-white">Edit</button> 
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteType-`+ types[i].id +`">
-                            Delete
-                        </button>                             
-                    </td>`;                                                 
-
-                output+= `</tr>`;    
-                output+= ` <div class="modal fade" id="deleteType-`+ types[i].id +`" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Delete `+ capitalizeFirstLetter(types[i].type) +`</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body">
-                        You sure you want to delete `+ capitalizeFirstLetter(types[i].type) +`?
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        {!!Form::open(['url' => 'deletepettype'])!!}
-
-                            {{Form::hidden('id', `+ types[i].id +`)}}
-
-                            <button type="submit" class="btn btn-primary">Yes</button>
-
-                        {!!Form::close()!!}
-                        </div>
-                    </div>
-                    </div>
-                    </div>`;    
-
-            }
-
-            output+= `</tbody>`;
-
-            typeList.innerHTML = output;
-        
-        } 
-    }    
-
-    xhr.send();
-
-}
 
 function editType(id){   
         
