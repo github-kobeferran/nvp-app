@@ -138,7 +138,7 @@ function getSelectValues(select) {
 
                         <label for="type">Date <span id="dateStatus" class="text-success"></span></label>
 
-                        {{Form::date('date', \Carbon\Carbon::tomorrow(), ['id' => 'dateInput', 'class' => 'form-control text-center w-50 mx-auto'])}}
+                        {{Form::date('date', \Carbon\Carbon::today(), ['id' => 'dateInput', 'class' => 'form-control text-center w-50 mx-auto'])}}
 
                     </div>
 

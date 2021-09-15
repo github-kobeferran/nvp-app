@@ -41,4 +41,18 @@ class Appointment extends Model
 
     }
 
+    public function getStatus(){
+        switch($this->status){
+            case 0:
+                return 'Pending';
+            break;
+            case 1:
+                return 'Done';
+            break;
+            case 2:
+                return 'Abandoned';
+            break;
+        }
+    }
+
 }

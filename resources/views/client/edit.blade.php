@@ -87,7 +87,7 @@
 
         <div class="form-group my-2">
 
-            <label class="text-muted" for="adress">Address <span style="font-size: .8em;" class="text-muted">: Street, Baranggay, City/Municipality, Province (seperated by comma)</span></label>
+            <label class="text-muted" for="adress">Address <span style="font-size: .8em;" class="text-muted">: Street, Barangay, City/Municipality, Province (seperated by comma)</span></label>
             {{Form::text('address', $client->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-100'])}}                        
 
         </div>

@@ -71,7 +71,7 @@
         <div class="form-inline ">
 
             <label class="text-muted" for="contact">Contact</label>
-            {{Form::text('contact', '', ['maxlength' => '15', 'class' => 'form-control ml-2 w-75'])}}                        
+            {{Form::text('contact', '', ['maxlength' => '15', 'class' => 'form-control ml-2 w-75', 'placeholder' => 'Contact'])}}                        
 
         </div>
 
@@ -80,7 +80,7 @@
         <div class="form-inline ">
 
             <label class="text-muted" for="adress">Address</label>
-            {{Form::text('address', '', ['maxlength' => '100', 'class' => 'form-control ml-2 w-75'])}}                        
+            {{Form::text('address', '', ['maxlength' => '100', 'class' => 'form-control ml-2 w-75', 'placeholder' => 'Address'])}}                        
 
         </div>
 
@@ -208,7 +208,7 @@
                                     <div class="form-inline ">
                             
                                         <label class="text-muted" for="contact">Contact</label>
-                                        {{Form::text('contact', $employee->contact, ['maxlength' => '15', 'class' => 'form-control ml-2 w-75'])}}                        
+                                        {{Form::text('contact', $employee->contact, ['maxlength' => '15', 'class' => 'form-control ml-2 w-75', 'placeholder' => 'Contact'])}}                        
                             
                                     </div>
                             
@@ -216,8 +216,8 @@
                             
                                     <div class="form-inline ">
                             
-                                        <label class="text-muted" for="adress">Address <span style="font-size: .8em;" class="text-muted">: Street, Baranggay, City/Municipality, Province (seperated by comma)</span></label>
-                                        {{Form::text('address', $employee->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-100 mx-auto'])}}                        
+                                        <label class="text-muted" for="adress">Address <span style="font-size: .8em;" class="text-muted">: Street, Barangay, City/Municipality, Province (seperated by comma)</span></label>
+                                        {{Form::text('address', $employee->address, ['maxlength' => '100', 'class' => 'form-control ml-2 w-100 mx-auto', 'placeholder' => 'Address'])}}                        
                             
                                     </div>
         

@@ -164,7 +164,7 @@
                                             {{Form::hidden('id', $category->id)}}
                                             <div class="form-group">
                                                 <label for="">Category Description</label>
-                                                {{Form::text('desc', $category->desc, ['class' => 'form-control', 'required' => 'required'])}}
+                                                {{Form::text('desc', $category->desc, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Category Description'])}}
                                             </div>
 
                                         </div>
@@ -225,7 +225,7 @@
                <div class="form-inline mr-0 mb-4">
 
                     <label for="desc">Category Description</label>
-                    {{Form::text('desc', '', ['class' => 'form-control ml-2'])}}                  
+                    {{Form::text('desc', '', ['class' => 'form-control ml-2', 'placeholder' => 'Category Description'])}}                  
 
                </div>
 

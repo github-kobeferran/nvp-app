@@ -263,7 +263,7 @@
 
         <div class="form-group">
             <label for="">Appointment Date</label>
-            {{Form::date('date', \Carbon\Carbon::tomorrow(), ['class' => 'form-control text-center mx-auto rounded-0', 'required' => 'required'])}}
+            {{Form::date('date', \Carbon\Carbon::today(), ['class' => 'form-control text-center mx-auto rounded-0', 'required' => 'required'])}}
         </div>           
 
         <button class="btn btn-block btn-primary rounded-0 mb-2">Set Appointment</button>

@@ -41,9 +41,8 @@ class OrdersReportSheet implements FromCollection, WithMapping, WithHeadings, Wi
     public function collection()
     {
         switch($this->getByType){
-            case 'day':
-               
-                return Order::where('created_at', Carbon::now())->get();
+            case 'day':               
+                return Order::whereBetween('created_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()])->get();
             break;
             case 'month':
                 return Order::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->get();
@@ -57,6 +56,7 @@ class OrdersReportSheet implements FromCollection, WithMapping, WithHeadings, Wi
     public function headings(): array
     {
         return [
+            'DATE',
             'TRANSACTION ID',
             'CLIENT EMAIL AND NAME',
             'ITEM',
@@ -71,6 +71,7 @@ class OrdersReportSheet implements FromCollection, WithMapping, WithHeadings, Wi
     {
 
         return [     
+            \Carbon\Carbon::parse($orders->created_at)->isoFormat('MMM DD, OY'),
             $orders->transaction->trans_id,
             $orders->transaction->client->user->email . ' - ' . strtoupper($orders->transaction->client->user->first_name) . ' ' . strtoupper($orders->transaction->client->user->last_name),
             strtoupper($orders->item->desc),

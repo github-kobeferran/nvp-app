@@ -43,6 +43,7 @@
                             <th>CLIENT ADDRESS</th>
                             <th>CLIENT CONTACT NUMBER</th>
                             <th>DONE BY</th>
+                            <th>Date</th>
 
                         </thead>
 
@@ -111,6 +112,7 @@
                                             N\A
                                         @endif
                                     </td>
+                                    <td>{{\Carbon\Carbon::parse($order->created_at)->isoFormat('MMM DD, OY') }}</td>
                                 </tr>
                                
                                 

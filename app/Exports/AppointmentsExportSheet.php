@@ -40,7 +40,7 @@ class AppointmentsExportSheet implements FromCollection, WithMapping, WithHeadin
     {
         switch($this->getByType){
             case 'day':               
-                return Appointment::where('date', Carbon::now())->get();
+                return Appointment::whereBetween('date', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()])->get();
             break;
             case 'month':
                 return Appointment::whereBetween('date', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->get();
@@ -74,7 +74,7 @@ class AppointmentsExportSheet implements FromCollection, WithMapping, WithHeadin
             $appointments->services()->implode('desc', ', '),
             $appointments->services()->sum('price'),            
             Carbon::parse($appointments->date)->isoFormat('MMM-DD-OY'),
-            $appointments->status == 0 ? 'Pending' : $appointments->status == 1 ? 'Done' : 'Abandoned',
+            $appointments->getStatus(),
         ];
     }
 
