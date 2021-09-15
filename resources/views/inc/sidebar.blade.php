@@ -15,6 +15,7 @@
 
         <a href="/admin">Dashboard</a>
         <a href="/admin/orders">Orders</a>
+        <a href="/admin/transactions">Transactions</a>
         <a href="/admin/clients">Clients</a>
         <a href="/admin/pets">Pets</a>
         <a href="/admin/inventory">Inventory</a>

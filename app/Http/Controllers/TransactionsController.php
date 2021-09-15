@@ -20,4 +20,8 @@ class TransactionsController extends Controller
         return Excel::download(new AppointmentsExport, Carbon::now()->isoFormat('OY-MMM-DD hh-mm-a') . '-nvp-clinic-appointments.xlsx');
     }
 
+    public function view(){
+        return view('admin.view.transactions');
+    }
+
 }
