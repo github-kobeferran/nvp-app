@@ -237,11 +237,11 @@
                                 <div class="d-flex justify-content-end p-price">&#8369; <span id="priceLabel-{{$item->id}}">{{number_format($item->reg_price, 2)}}</span></div>
                             </div>
 
+                            @if (!auth()->user()->isAdmin())
                             {{Form::hidden('item_id', $item->id, ['id' => 'item-'. $item->id])}}
                             {{Form::hidden('client_id', auth()->user()->client->id, ['id' => 'client-' . auth()->user()->client->id])}}
                             {{Form::hidden('price', $item->reg_price, ['id' => 'price-' . $item->id])}}
 
-                            @if (!auth()->user()->isAdmin())
 
                                 @if(is_null(auth()->user()->client->image) || is_null(auth()->user()->client->dob) || is_null(auth()->user()->client->contact) || is_null(auth()->user()->client->address) || is_null(auth()->user()->client->sex))
 
