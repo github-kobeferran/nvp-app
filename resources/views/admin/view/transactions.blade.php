@@ -18,7 +18,7 @@
 
         <hr>
         
-        <a href="/transactionreport" class="float-right btn btn-success">Export Transactions to Excel</a>
+        <a href="/transactionreport" class="float-right btn btn-success my-2 mr-3 rounded-0">Export Transactions to Excel</a>
 
         @if (!is_null(\App\Models\Transaction::first()))
         
