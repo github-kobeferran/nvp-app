@@ -9,16 +9,23 @@ use App\Models\Item;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\Payment;
+use App\Models\Setting;
 use Carbon\Carbon;
-use Carbon\Setting;
 
 class OrdersController extends Controller
 {
 
     public function store(Request $request){
 
+        
         if($request->method() != 'POST')
-            return redirect()->back();                        
+            return redirect()->back();  
+
+        $setting = Setting::first();
+
+        if($setting->stop_orders)
+            return redirect()->back()->with('warning', 'Not accepting orders is on, please see settings');
+        
 
         $validator = Validator::make($request->all(), [
             'client_id' => 'required',                                                          
