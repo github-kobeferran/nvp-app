@@ -82,6 +82,7 @@ Route::middleware([App\Http\Middleware\ProtectAdminRoutesMiddleware::class])->gr
     Route::get('/ordersreport', [App\Http\Controllers\TransactionsController::class, 'ordersExport'])->name('orders.export');    
     Route::get('/appointmentsreport', [App\Http\Controllers\TransactionsController::class, 'appointmentsExport'])->name('appointments.export');    
     Route::get('/admin/transactions', [App\Http\Controllers\TransactionsController::class, 'view'])->name('transaction.view');    
+    Route::get('/transactionreport', [App\Http\Controllers\TransactionsController::class, 'transactionsExport'])->name('transactions.export');    
 
 });
 
