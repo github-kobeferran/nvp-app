@@ -207,13 +207,13 @@
         
             <div class="row">
 
-                <div class="d-flex justify-content-center container mt-5">                    
+                <div class="d-flex justify-content-center container mt-5 flex-wrap">                    
 
          
                     
                     @foreach ($the_items as $item)
 
-                        <div class="card p-3 bg-white mx-auto border border-secondary">
+                        <div class="card p-3 bg-white mx-auto my-1 border border-secondary">
                             <div>
                                 <span class="text-muted" style="font-size: .8em !important">{{is_null($item->pet_type_id) ? 'For all type of pets' : 'For ' . $item->type->type . 's'}}</span>
                                 <i class="fa fa-circle float-right {{$item->quantity > 0 ? 'text-success' : 'text-secondary'}} "></i> 
